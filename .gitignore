@@ -3,7 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
-.env
+.env2
 .env.backup
 .phpunit.result.cache
 Homestead.json
@@ -11,3 +11,5 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .idea/
+rtm.zip
+rtm2.zip
