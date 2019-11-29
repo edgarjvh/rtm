@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Event;
 use App\RatingKey;
 use DateTime;
+use DateTimeZone;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Microsoft\Graph\Graph;
@@ -139,49 +140,43 @@ class OutlookController extends Controller
                 $now = time() + 300;
                 $otoken = $ouser->outlook_access_token;
                 try {
-                    if ($ouser->outlook_expiry_token <= $now) {
-                        // Token is expired (or very close to it)
-                        // so let's refresh
+                    $oauthClient = new GenericProvider([
+                        'clientId' => env('OAUTH_APP_ID'),
+                        'clientSecret' => env('OAUTH_APP_PASSWORD'),
+                        'redirectUri' => env('OAUTH_REDIRECT_URI'),
+                        'urlAuthorize' => env('OAUTH_AUTHORITY') . env('OAUTH_AUTHORIZE_ENDPOINT'),
+                        'urlAccessToken' => env('OAUTH_AUTHORITY') . env('OAUTH_TOKEN_ENDPOINT'),
+                        'urlResourceOwnerDetails' => '',
+                        'scopes' => env('OAUTH_SCOPES')
+                    ]);
 
-                        // Initialize the OAuth client
-                        $oauthClient = new GenericProvider([
-                            'clientId' => env('OAUTH_APP_ID'),
-                            'clientSecret' => env('OAUTH_APP_PASSWORD'),
-                            'redirectUri' => env('OAUTH_REDIRECT_URI'),
-                            'urlAuthorize' => env('OAUTH_AUTHORITY') . env('OAUTH_AUTHORIZE_ENDPOINT'),
-                            'urlAccessToken' => env('OAUTH_AUTHORITY') . env('OAUTH_TOKEN_ENDPOINT'),
-                            'urlResourceOwnerDetails' => '',
-                            'scopes' => env('OAUTH_SCOPES')
+                    try {
+                        $newToken = $oauthClient->getAccessToken('refresh_token', [
+                            'refresh_token' => $ouser->outlook_refresh_token
                         ]);
 
-                        try {
-                            $newToken = $oauthClient->getAccessToken('refresh_token', [
-                                'refresh_token' => $ouser->outlook_refresh_token
-                            ]);
+                        // Store the new values
+                        $this->storeTokens(
+                            $ouser->email,
+                            $ouser->outlook_account,
+                            $newToken->getToken(),
+                            $newToken->getRefreshToken(),
+                            $newToken->getExpires()
+                        );
 
-                            // Store the new values
-                            $this->storeTokens(
-                                $ouser->email,
-                                $ouser->outlook_account,
-                                $newToken->getToken(),
-                                $newToken->getRefreshToken(),
-                                $newToken->getExpires()
-                            );
-
-                            $otoken = $newToken->getToken();
-                        } catch (IdentityProviderException $e) {
-                            return '';
-                        }
+                        $otoken = $newToken->getToken();
+                    } catch (IdentityProviderException $e) {
+                        return '';
                     }
 
                     $graph = new Graph();
                     $graph->setAccessToken($otoken);
-
                     $eventsQueryParams = array(
-                        // // Only return Subject, Start, and End fields
-                        "\$select" => "subject,start,end,attendees,isAllDay, IsCancelled, IsOrganizer, organizer, bodyPreview",
-                        // Sort by Start, oldest first
-                        "\$orderby" => "Start/DateTime"
+
+                        "\$select" => "subject,start,end,attendees,isAllDay, IsCancelled, IsOrganizer, organizer, bodyPreview, CreatedDateTime, ResponseStatus",
+                        "\$orderby" => "Start/DateTime",
+                        "\$top" => 1000,
+                        "\$filter" => "Start/DateTime ge '". date('c', strtotime('-2 days')) ."'"
                     );
 
                     $getEventsUrl = '/me/events?' . http_build_query($eventsQueryParams);
@@ -189,25 +184,22 @@ class OutlookController extends Controller
                         ->setReturnType(Model\Event::class)
                         ->execute();
 
-                    //return $events;
                     $now = time();
 
                     foreach ($events as $event) {
-                        //echo '0';
                         if ($event->getIsOrganizer() && !$event->getIsAllDay() && !$event->getIsCancelled()) {
-                            //echo '1';
+
                             $organizer = $event->getOrganizer()->getEmailAddress()->getAddress();
-                            $dtStart = strtotime($event->getStart()->getDateTime());
-                            $dtEnd = strtotime($event->getEnd()->getDateTime());
+                            $dtStart = date('U', strtotime($event->getStart()->getDateTime()));
+                            $dtEnd = date('U', strtotime($event->getEnd()->getDateTime()));
 
                             // is meeting over in less than 1 day
                             if ((ceil(($now - $dtEnd) / 60) >= 0) && ((ceil($now - $dtEnd) / 60) < 1440)) {
-                                //echo '2';
+
                                 // is meeting duration is greater than 20 minutes but less than 1 day
                                 if ((ceil(($dtEnd - $dtStart) / 60) > 20) && (ceil(($dtEnd - $dtStart) / 60) < 1440)) {
-                                    //echo '3';
-                                    if (count($event->getAttendees()) > 0) {
-                                        //echo '4';
+
+                                    if (count($event->getAttendees()) >= 3) {
 
                                         $eventExist = Event::where('event_id', $event->getId())->first();
 
@@ -230,10 +222,15 @@ class OutlookController extends Controller
                                                 }
                                             }
 
+                                            $start_date = new DateTime($event->getStart()->getDateTime());
+                                            $start_date->setTimezone(new DateTimeZone("UTC"));
+                                            $end_date = new DateTime( $event->getEnd()->getDateTime());
+                                            $end_date->setTimezone(new DateTimeZone("UTC"));
+
                                             $newEvent = new Event();
                                             $newEvent->organizer = $organizer;
-                                            $newEvent->start_date = date('Y-m-d H:i:s', $dtStart);
-                                            $newEvent->end_date = date('Y-m-d H:i:s', $dtEnd);
+                                            $newEvent->start_date = $start_date->format('Y-m-d H:i:s');
+                                            $newEvent->end_date = $end_date->format('Y-m-d H:i:s');
                                             $newEvent->attendees = count($event->getAttendees());
                                             $newEvent->event_id = $event->getId();
                                             $newEvent->provider = 'outlook';
@@ -248,8 +245,6 @@ class OutlookController extends Controller
                                 }
                             }
                         }
-
-                        //echo '<br>';
                     }
                 } catch (IdentityProviderException $e) {
                     User::where('email', $ouser->email)->update(array(

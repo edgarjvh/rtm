@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'smtp'),
+    'driver' => env('MAIL_DRIVER'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,7 +30,6 @@ return [
     */
 
     'host' => env('MAIL_HOST'),
-    // 'host' => env('MAIL_HOST', 'mail.ratemymeeting.webilation.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +43,6 @@ return [
     */
 
     'port' => env('MAIL_PORT'),
-    // 'port' => env('MAIL_PORT', 587),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'verify@ratemymeeting.webilation.com'),
-        'name' => env('MAIL_FROM_NAME', 'Rate This Meeting'),
+        'address' => env('MAIL_FROM_ADDRESS'),
+        'name' => env('MAIL_FROM_NAME'),
     ],
 
     /*
@@ -73,7 +71,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'encryption' => env('MAIL_ENCRYPTION'),
 
     /*
     |--------------------------------------------------------------------------
@@ -89,9 +87,6 @@ return [
     'username' => env('MAIL_USERNAME'),
 
     'password' => env('MAIL_PASSWORD'),
-    // 'username' => env('MAIL_USERNAME', 'verify@ratemymeeting.webilation.com'),
-
-    // 'password' => env('MAIL_PASSWORD', 'DPvtOV~$@UZa'),
 
     /*
     |--------------------------------------------------------------------------

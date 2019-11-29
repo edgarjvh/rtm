@@ -31,13 +31,13 @@
                         @if(count($newEvents) > 0)
                             @foreach($newEvents as $event)
                                 <tr>
-                                    <td class="align-middle">{{ ucwords($event->provider) }}</td>
+                                    <td class="align-middle"><img src="{{'/img/'.strtolower($event->provider) . '.png'}}" style="width:16px; margin-top:-5px" alt="">  {{ ucwords($event->provider) }}</td>
                                     <td class="align-middle">
                                         <b>{{$event->name}}</b>
                                         <br>
                                         <small>{{$event->organizer}}</small>
                                     </td>
-                                    <td class="align-middle">{{$event->title}}</td>
+                                    <td class="align-middle">  {{$event->title}}</td>
                                     <td class="align-middle">{{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</td>
                                     <td class="align-middle">{{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</td>
                                     <td class="align-middle">{{$event->rate === null ? 'unrated' : number_format($event->rate,1)}}</td>
@@ -51,7 +51,7 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="6">{{ $newEvents->links() }}</td>
+                            {{--<td colspan="6">{{ $newEvents->links() }}</td>--}}
                         </tr>
                         </tfoot>
                     </table>

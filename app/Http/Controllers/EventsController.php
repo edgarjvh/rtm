@@ -44,21 +44,39 @@ class EventsController extends Controller
         $events = array();
 
         if ($this->user->organization_owner === 1) {
-            $events = User::where('users.organization_id', $this->user->organization_id)
-                ->whereNotNull('events.id')
-                ->leftJoin('events', 'events.organizer', '=', 'users.email')
-                ->select('events.*','users.name')
-                ->paginate(6);
+            $events = DB::select(
+                "(select
+                e.*, u.name
+                from users as u
+                left join events as e on u.google_account = e.organizer
+                where u.organization_id = 2 and e.event_id is not null)
+                UNION
+                (select
+                e.*, u.name
+                from events as e
+                left join users as u on u.outlook_account = e.organizer
+                where u.organization_id = 2 and e.event_id is not null)
+                order by start_date asc");
         } else {
-            $events = Event::where('organizer', $this->user->email)
-                ->leftJoin('users', 'events.organizer', '=', 'users.email')
-                ->select('events.*','users.name')
-                ->paginate(6);
+            $events = DB::select(
+                "(select
+                e.*, u.name, concat('unrated') as rate
+                from events as e
+                left join users as u on e.organizer = u.google_account
+                where u.email = 'edgarjvh@gmail.com')
+                UNION
+                (select
+                e.*, u.name, concat('unrated') as rate
+                from events as e
+                left join users as u on e.organizer = u.outlook_account
+                where u.email = 'edgarjvh@gmail.com')
+                order by start_date asc");
         }
+
 
         foreach ($events as $event) {
             $rate = Rating::where('event_id', $event->event_id)->avg('rate');
-            $event['rate'] = $rate;
+            $event->rate = $rate;
         }
 
         $organization = '';
