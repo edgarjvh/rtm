@@ -148,7 +148,8 @@ class gCalendarController extends Controller
                                                                 app()->call('\App\Http\Controllers\MessagesController@sendEmail',
                                                                     [$attendee['email'],
                                                                         $rating_key,
-                                                                        $item['id']]);
+                                                                        $item['id'],
+                                                                        $item['summary']]);
                                                             }
                                                         }
 

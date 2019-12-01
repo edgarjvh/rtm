@@ -217,7 +217,8 @@ class OutlookController extends Controller
                                                         [
                                                             $attendee['emailAddress']['address'],
                                                             $rating_key,
-                                                            $event->getId()
+                                                            $event->getId(),
+                                                            $event->getSubject()
                                                         ]);
                                                 }
                                             }

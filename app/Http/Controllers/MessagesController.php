@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Mail;
 
 class MessagesController extends Controller
 {
-    public function sendEmail($email, $rating_key, $event_id)
+    public function sendEmail($email, $rating_key, $event_id, $meeting_subject)
     {
-        Mail::to($email)->send(new RateEvent($rating_key, $event_id));
+        Mail::to($email)->send(new RateEvent($rating_key, $event_id, $meeting_subject));
         echo $email . ' - Message Sent <br>';
     }
 }

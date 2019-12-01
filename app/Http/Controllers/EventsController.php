@@ -63,13 +63,13 @@ class EventsController extends Controller
                 e.*, u.name, concat('unrated') as rate
                 from events as e
                 left join users as u on e.organizer = u.google_account
-                where u.email = 'edgarjvh@gmail.com')
+                where u.email = '". Auth::user()->email ."')
                 UNION
                 (select
                 e.*, u.name, concat('unrated') as rate
                 from events as e
                 left join users as u on e.organizer = u.outlook_account
-                where u.email = 'edgarjvh@gmail.com')
+                where u.email = '". Auth::user()->email ."')
                 order by start_date asc");
         }
 
