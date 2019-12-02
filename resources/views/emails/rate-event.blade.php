@@ -66,8 +66,14 @@
     <tr>
         <td>
             <p style="max-width: 520px;  margin: 0; padding: 15px 5px;text-align: justify; font-family: 'Source Sans Pro', 'sans-serif';font-size: 20px; color: rgba(0,0,0,0.5)">
-                you are receiving this email because the host of a recent meeting you attended <b>({{$meeting_subject}})</b> would like an anonymous
-                rating of the meeting. Please rate this meeting 1 - 5 where 1 is very poor and 5 is excellent
+                You are receiving this email because {{$organizer_email}} hosted a meeting you attended
+                <b>({{$meeting_subject}} @ {{$start_date . ' - ' . $end_date}}) UTC.</b>
+                <br>
+                <br>
+                Would you provide an anonymous rating of the meeting?
+                <br>
+                <br>
+                Please rate this meeting 1 - 5 where 1 is very poor and 5 is excellent
             </p>
 
         </td>

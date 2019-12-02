@@ -176,7 +176,7 @@ class OutlookController extends Controller
                         "\$select" => "subject,start,end,attendees,isAllDay, IsCancelled, IsOrganizer, organizer, bodyPreview, CreatedDateTime, ResponseStatus",
                         "\$orderby" => "Start/DateTime",
                         "\$top" => 1000,
-                        "\$filter" => "Start/DateTime ge '". date('c', strtotime('-2 days')) ."'"
+                        "\$filter" => "Start/DateTime ge '". date('c', strtotime('-1 days')) ."' and End/DateTime le '". date('c') ."'"
                     );
 
                     $getEventsUrl = '/me/events?' . http_build_query($eventsQueryParams);
@@ -205,6 +205,11 @@ class OutlookController extends Controller
 
                                         // if event is not in database, will be saved
                                         if (!$eventExist) {
+                                            $start_date = new DateTime($event->getStart()->getDateTime());
+                                            $start_date->setTimezone(new DateTimeZone("UTC"));
+                                            $end_date = new DateTime( $event->getEnd()->getDateTime());
+                                            $end_date->setTimezone(new DateTimeZone("UTC"));
+
                                             foreach ($event->getAttendees() as $attendee) {
                                                 if ($attendee['emailAddress']['address'] !== $organizer) {
                                                     $rating_key = Str::random(100);
@@ -218,15 +223,14 @@ class OutlookController extends Controller
                                                             $attendee['emailAddress']['address'],
                                                             $rating_key,
                                                             $event->getId(),
-                                                            $event->getSubject()
+                                                            $event->getSubject(),
+                                                            $organizer,
+                                                            $start_date->format('Y-m-d H:i:s'),
+                                                            $end_date->format('Y-m-d H:i:s')
                                                         ]);
                                                 }
                                             }
 
-                                            $start_date = new DateTime($event->getStart()->getDateTime());
-                                            $start_date->setTimezone(new DateTimeZone("UTC"));
-                                            $end_date = new DateTime( $event->getEnd()->getDateTime());
-                                            $end_date->setTimezone(new DateTimeZone("UTC"));
 
                                             $newEvent = new Event();
                                             $newEvent->organizer = $organizer;

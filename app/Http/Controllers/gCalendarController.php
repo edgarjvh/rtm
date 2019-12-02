@@ -94,7 +94,8 @@ class gCalendarController extends Controller
                     $optParams = array(
                         'orderBy' => 'startTime',
                         'singleEvents' => true,
-                        'timeMin' => date('c', strtotime('-1 days'))
+                        'timeMin' => date('c', strtotime('-1 days')),
+                        'timeMax' => date('c')
                     );
 
                     $results = $service->events->listEvents($calendarId, $optParams);
@@ -134,6 +135,11 @@ class gCalendarController extends Controller
                                                     $eventExist = Event::where('event_id', $item['id'])->first();
 
                                                     if (!$eventExist) {
+                                                        $start_date = new DateTime( $item['start']['dateTime']);
+                                                        $start_date->setTimezone(new DateTimeZone("UTC"));
+                                                        $end_date = new DateTime( $item['end']['dateTime']);
+                                                        $end_date->setTimezone(new DateTimeZone("UTC"));
+
                                                         for ($x = 0; $x < count($item['attendees']); $x++) {
                                                             $attendee = $item['attendees'][$x];
 
@@ -146,17 +152,17 @@ class gCalendarController extends Controller
                                                                 $key->save();
 
                                                                 app()->call('\App\Http\Controllers\MessagesController@sendEmail',
-                                                                    [$attendee['email'],
+                                                                    [
+                                                                        $attendee['email'],
                                                                         $rating_key,
                                                                         $item['id'],
-                                                                        $item['summary']]);
+                                                                        $item['summary'],
+                                                                        $item['organizer']['email'],
+                                                                        $start_date->format('Y-m-d H:i:s'),
+                                                                        $end_date->format('Y-m-d H:i:s')
+                                                                    ]);
                                                             }
                                                         }
-
-                                                        $start_date = new DateTime( $item['start']['dateTime']);
-                                                        $start_date->setTimezone(new DateTimeZone("UTC"));
-                                                        $end_date = new DateTime( $item['end']['dateTime']);
-                                                        $end_date->setTimezone(new DateTimeZone("UTC"));
 
                                                         $event = new Event();
                                                         $event->organizer = $item['organizer']['email'];
