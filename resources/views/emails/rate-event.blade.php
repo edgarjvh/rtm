@@ -49,7 +49,7 @@
     </style>
 </head>
 <body style="padding: 10px">
-<table style="width: 90%; max-width:520px;font-family: 'Source Sans Pro', sans-serif;">
+<table style="width: 90%; max-width:520px;font-family: 'Source Sans Pro', sans-serif;margin:0 auto">
     <tr>
         <td style="text-align: center">
             <img src="{{env('APP_URL') . '/img/logo.png'}}" style="width: 250px;margin-bottom: 20px"
@@ -58,22 +58,25 @@
     </tr>
     <tr>
         <td>
-            <p style="margin: 0; padding: 0;text-align: left; font-family: 'Merriweather', 'serif';font-size: 60px; color: #C96756; font-weight: 900; font-style: italic">
+            <p style="margin: 0; padding: 0;text-align: center; font-family: 'Merriweather', 'serif';font-size: 60px; color: #C96756; font-weight: 900; font-style: italic">
                 Hello!
             </p>
         </td>
     </tr>
     <tr>
         <td>
-            <p style="max-width: 520px;  margin: 0; padding: 15px 5px;text-align: justify; font-family: 'Source Sans Pro', 'sans-serif';font-size: 20px; color: rgba(0,0,0,0.5)">
-                You are receiving this email because {{$organizer_email}} hosted a meeting you attended
-                <b>({{$meeting_subject}} @ {{$start_date . ' - ' . $end_date}}) UTC.</b>
+            <p style="max-width: 520px;  margin: 0; padding: 15px 5px;text-align: justify; font-family: 'Source Sans Pro', 'sans-serif';font-size: 18px; color: rgba(0,0,0,0.5)">
+                You are receiving this email because <strong>{{$organizer_email ?? 'edgarjvh@gmail.com'}}</strong> hosted a meeting you attended.
                 <br>
                 <br>
-                Would you provide an anonymous rating of the meeting?
+                <strong>Subject: </strong>{{$meeting_subject ?? 'testing local'}}
                 <br>
                 <br>
-                Please rate this meeting 1 - 5 where 1 is very poor and 5 is excellent
+                <strong>Date/Time: </strong> {{($start_date ?? '2019-12-05 12:00:00') . ' >> ' . ($end_date ?? '2019-12-05 12:30:00')}}
+                <br>
+                <br>
+                Would you provide an anonymous rating of the meeting? The more stars, the better!
+
             </p>
 
         </td>
@@ -142,7 +145,7 @@
     <tr>
         <td>
 
-            <p style="max-width: 520px;  margin: 0; padding: 15px 5px;text-align: justify; font-family: 'Source Sans Pro', 'sans-serif';font-size: 20px; color: rgba(0,0,0,0.5)">
+            <p style="max-width: 520px;  margin: 0; padding: 15px 5px;text-align: justify; font-family: 'Source Sans Pro', 'sans-serif';font-size: 18px; color: rgba(0,0,0,0.5)">
                 This email was sent to you by <a style="color:#C96756;text-decoration: none;" href="{{env('APP_URL') . ''}}">ratethismeeting.com</a>
                 if you
                 would like to rate your own meetings <a style="color:#C96756;text-decoration: none;"
