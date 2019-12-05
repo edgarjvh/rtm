@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
 
 Route::get('/test', 'RatingsController@test');
@@ -42,6 +42,10 @@ Route::get('/rating/{rating_key}/{event_id}/{rate}', 'RatingsController@handleRa
 Route::get('/outlook', 'OutlookController@login');
 Route::get('/outlookauth', 'OutlookController@outlookauth');
 Route::get('/ocal', 'OutlookController@outlookCalendar')->name('calendar');
+
+Route::get('/policy', function (){
+    return view('privacy_policies');
+});
 
 Route::post('/checkorg', 'OrganizationController@checkorg');
 

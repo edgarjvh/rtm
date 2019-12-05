@@ -12,7 +12,22 @@
                         My Meetings
                     </div>
 
-                    <img src="{{Request::root() . '/img/icon.png'}}" style="width: 32px;" alt="">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3 d-flex ">
+
+                            <div class="mr-1">Overall Rate: </div>
+                            <div class="text-dark">{{number_format($global_avg, 1)}}</div>
+                            <div class="ml-2" style="margin-top: -3px !important;">
+                                <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
+                                <script type="IN/Share" data-url="https://app.ratethismeeting.com"></script>
+                            </div>
+
+                        </div>
+
+
+                        <img src="{{Request::root() . '/img/icon.png'}}" style="width: 32px;" alt="">
+                    </div>
+
                 </div>
 
                 <div class="table-responsive">

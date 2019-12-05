@@ -68,7 +68,7 @@ class RegisterController extends Controller
         if($org){
             $user = User::create([
                 'name' => $data['name'],
-                'email' => $data['email'],
+                'email' => strtolower($data['email']),
                 'organization_id' => $org->id,
                 'organization_owner' => 0,
                 'password' => Hash::make($data['password']),
@@ -82,7 +82,7 @@ class RegisterController extends Controller
 
             $user = User::create([
                 'name' => $data['name'],
-                'email' => $data['email'],
+                'email' => strtolower($data['email']),
                 'organization_id' => $org->id,
                 'organization_owner' => 1,
                 'password' => Hash::make($data['password']),
@@ -95,13 +95,13 @@ class RegisterController extends Controller
     }
 
     public function verifyEmailFirst($email){
-        $user = User::where('email', $email)->whereNotNull('email_verified_at')->first();
+        $user = User::where('email', strtolower($email))->whereNotNull('email_verified_at')->first();
 
         if ($user){
             return redirect(route('login'));
         }
 
-        return view('auth.verify', ['email' => $email, 'resend' => false]);
+        return view('auth.verify', ['email' => strtolower($email), 'resend' => false]);
     }
 
     public function sendEmail($curUser){
@@ -113,24 +113,24 @@ class RegisterController extends Controller
     public function resendEmail($email){
         $token = Str::random(40);
 
-        User::where('email', $email)->update(array(
+        User::where('email', strtolower($email))->update(array(
             'verify_token' => $token
         ));
 
-        $curUser = User::where('email', $email)->first();
+        $curUser = User::where('email', strtolower($email))->first();
 
-        Mail::to($email)->send(
+        Mail::to(strtolower($email))->send(
             new VerifyToken($curUser)
         );
 
-        return view('auth.verify', ['email' => $email, 'resend' => true]);
+        return view('auth.verify', ['email' => strtolower($email), 'resend' => true]);
     }
 
     public function verifying($email, $token){
-        $user = User::where(['email' => $email, 'verify_token' => $token])->first();
+        $user = User::where(['email' => strtolower($email), 'verify_token' => $token])->first();
 
         if ($user){
-            User::where(['email' => $email, 'verify_token' => $token])->update(array(
+            User::where(['email' => strtolower($email), 'verify_token' => $token])->update(array(
                 'email_verified_at' => date('Y-m-d H:i:s', time()),
                 'verify_token' => null
             ));

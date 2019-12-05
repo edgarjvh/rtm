@@ -25,7 +25,7 @@
                                 <label for="email" class="m-0">{{ __('E-Mail Address') }}</label>
 
                                 <input id="email" type="email"
-                                       class="form-control @error('email') is-invalid @enderror" name="email"
+                                       class="form-control @error('email') is-invalid @enderror text-lowercase" name="email"
                                        value="{{ old('email') }}" required autocomplete="email" autofocus>
 
                                 @error('email')
@@ -71,6 +71,12 @@
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
+                            </div>
+
+                            <div class="form-group col mt-1 text-center">
+
+                                <a class="col text-center policy" href="/policy">Privacy Policy</a>
+
                             </div>
 
                             <hr>

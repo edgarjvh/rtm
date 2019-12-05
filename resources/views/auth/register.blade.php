@@ -28,11 +28,11 @@
 
                                 @if (!empty($name))
                                     <input id="name" type="text"
-                                           class="form-control @error('name') is-invalid @enderror" name="name"
+                                           class="form-control @error('name') is-invalid @enderror text-lowercase" name="name"
                                            value="{{ $name }}" required autocomplete="name" autofocus>
                                 @else
                                     <input id="name" type="text"
-                                           class="form-control @error('name') is-invalid @enderror" name="name"
+                                           class="form-control @error('name') is-invalid @enderror text-lowercase" name="name"
                                            value="{{ old('name') }}" required autocomplete="name" autofocus>
                                 @endif
 
@@ -113,6 +113,12 @@
                                 <button type="submit" class="nav-link">
                                     REGISTER
                                 </button>
+                            </div>
+
+                            <div class="form-group col mt-1 text-center">
+
+                                <a class="col text-center policy" href="/policy">Privacy Policy</a>
+
                             </div>
 
                             <hr>

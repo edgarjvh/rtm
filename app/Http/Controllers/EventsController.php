@@ -56,7 +56,7 @@ class EventsController extends Controller
                 from events as e
                 left join users as u on u.outlook_account = e.organizer
                 where u.organization_id = 2 and e.event_id is not null)
-                order by start_date asc");
+                order by start_date desc");
         } else {
             $events = DB::select(
                 "(select
@@ -70,14 +70,23 @@ class EventsController extends Controller
                 from events as e
                 left join users as u on e.organizer = u.outlook_account
                 where u.email = '". Auth::user()->email ."')
-                order by start_date asc");
+                order by start_date desc");
         }
 
+
+        $rates = [];
 
         foreach ($events as $event) {
             $rate = Rating::where('event_id', $event->event_id)->avg('rate');
             $event->rate = $rate;
+
+            if (is_numeric($rate)){
+                $rates[] = $rate;
+            }
         }
+
+        $global_avg = array_sum($rates) / count($rates);
+
 
         $organization = '';
 
@@ -89,7 +98,7 @@ class EventsController extends Controller
         $timezone = 'America/Caracas';
 //        $timezone = $this->get_local_time();
 
-        return view('events.index')->with(['newEvents' => $events, 'organization' => $organization, 'tz' => $timezone]);
+        return view('events.index')->with(['newEvents' => $events, 'organization' => $organization, 'tz' => $timezone, 'global_avg' => $global_avg]);
     }
 
 

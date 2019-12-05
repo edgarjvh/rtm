@@ -31,6 +31,10 @@
             flex-direction:column;
             height:100vh;
         }
+
+        .policy{
+            color: #C96756 !important;
+        }
         .nav-link {
             border: 2px solid #C96756;
             min-width: 90px !important;
@@ -79,6 +83,10 @@
                 color: #C96756 !important;
                 border-radius: 5px;
                 padding: 2px 15px !important;
+            }
+
+            .policy{
+                color: #C96756 !important;
             }
         }
 
@@ -218,9 +226,7 @@
     </main>
 </div>
 
-{{--<script>--}}
-    {{--console.log(moment.tz.guess(true));--}}
-    {{--console.log(moment.format('Z'));--}}
-{{--</script>--}}
+
+
 </body>
 </html>

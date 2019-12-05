@@ -10,7 +10,6 @@ use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_People;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Http\Request;
 use App\User;
 use Auth;
 use Illuminate\Support\Str;
@@ -25,7 +24,7 @@ class gCalendarController extends Controller
         $client->setAuthConfig('client_secret.json');
         $client->setAccessType('offline');
         $client->setPrompt('consent select_account');
-        $client->addScope(Google_Service_Calendar::CALENDAR);
+        $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
         $client->addScope(Google_Service_People::USERINFO_PROFILE);
         $client->addScope(Google_Service_People::USERINFO_EMAIL);
 
@@ -35,12 +34,6 @@ class gCalendarController extends Controller
         $this->client = $client;
     }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         session_start();
@@ -77,7 +70,7 @@ class gCalendarController extends Controller
                     $client = new Google_Client();
                     $client->setAuthConfig('client_secret.json');
                     $client->setAccessType('offline');
-                    $client->addScope(Google_Service_Calendar::CALENDAR_EVENTS_READONLY);
+                    $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
                     $client->addScope(Google_Service_People::USERINFO_PROFILE);
                     $client->addScope(Google_Service_People::USERINFO_EMAIL);
 
@@ -119,7 +112,7 @@ class gCalendarController extends Controller
                                     if ((ceil(($dtEnd - $dtStart) / 60) > 20) && (ceil(($dtEnd - $dtStart) / 60) < 1440)) {
 
                                         // check if user is also organizer
-                                        if ($user->email == $item['organizer']['email']) {
+                                        if (strtolower($user->email) == strtolower($item['organizer']['email'])) {
 
                                             if ($item['attendees']){
                                                 $acceptedCount = 0;
@@ -143,24 +136,26 @@ class gCalendarController extends Controller
                                                         for ($x = 0; $x < count($item['attendees']); $x++) {
                                                             $attendee = $item['attendees'][$x];
 
-                                                            // if attendee is not the organizer, sent email for rating
-                                                            if ($item['organizer']['email'] != $attendee['email']) {
-                                                                $rating_key = Str::random(100);
+                                                            if ($attendee['responseStatus'] == "accepted"){
+                                                                // if attendee is not the organizer, sent email for rating
+                                                                if (strtolower($item['organizer']['email']) != strtolower($attendee['email'])) {
+                                                                    $rating_key = Str::random(100);
 
-                                                                $key = new RatingKey();
-                                                                $key->rating_key = $rating_key;
-                                                                $key->save();
+                                                                    $key = new RatingKey();
+                                                                    $key->rating_key = $rating_key;
+                                                                    $key->save();
 
-                                                                app()->call('\App\Http\Controllers\MessagesController@sendEmail',
-                                                                    [
-                                                                        $attendee['email'],
-                                                                        $rating_key,
-                                                                        $item['id'],
-                                                                        $item['summary'],
-                                                                        $item['organizer']['email'],
-                                                                        $start_date->format('Y-m-d H:i:s'),
-                                                                        $end_date->format('Y-m-d H:i:s')
-                                                                    ]);
+                                                                    app()->call('\App\Http\Controllers\MessagesController@sendEmail',
+                                                                        [
+                                                                            $attendee['email'],
+                                                                            $rating_key,
+                                                                            $item['id'],
+                                                                            $item['summary'],
+                                                                            $item['organizer']['email'],
+                                                                            $start_date->format('Y-m-d H:i:s'),
+                                                                            $end_date->format('Y-m-d H:i:s')
+                                                                        ]);
+                                                                }
                                                             }
                                                         }
 
@@ -202,7 +197,6 @@ class gCalendarController extends Controller
                 }
             }
         }
-
     }
 
     function str_crypt($string, $action = 'e')
