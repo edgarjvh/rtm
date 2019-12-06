@@ -52,7 +52,7 @@ Route::post('/checkorg', 'OrganizationController@checkorg');
 Route::get('/error', 'ErrorController@showMessage')->name('error');
 
 Route::get('/rate', function (){
-    return view('emails.rate-event')->with(['rating_key' => 'this-is-a-rating-key', 'event_id' => '554']);
+    return view('emails.rate-event1')->with(['rating_key' => 'this-is-a-rating-key', 'event_id' => '554']);
 });
 
 Route::get('/rate1', function (){

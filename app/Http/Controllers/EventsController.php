@@ -49,13 +49,13 @@ class EventsController extends Controller
                 e.*, u.name
                 from users as u
                 left join events as e on u.google_account = e.organizer
-                where u.organization_id = 2 and e.event_id is not null)
+                where u.organization_id = ". $this->user->organization_id ." and e.event_id is not null)
                 UNION
                 (select
                 e.*, u.name
                 from events as e
                 left join users as u on u.outlook_account = e.organizer
-                where u.organization_id = 2 and e.event_id is not null)
+                where u.organization_id = ". $this->user->organization_id ." and e.event_id is not null)
                 order by start_date desc");
         } else {
             $events = DB::select(
@@ -63,13 +63,13 @@ class EventsController extends Controller
                 e.*, u.name, concat('unrated') as rate
                 from events as e
                 left join users as u on e.organizer = u.google_account
-                where u.email = '". Auth::user()->email ."')
+                where u.email = '". strtolower(Auth::user()->email) ."')
                 UNION
                 (select
                 e.*, u.name, concat('unrated') as rate
                 from events as e
                 left join users as u on e.organizer = u.outlook_account
-                where u.email = '". Auth::user()->email ."')
+                where u.email = '". strtolower(Auth::user()->email) ."')
                 order by start_date desc");
         }
 

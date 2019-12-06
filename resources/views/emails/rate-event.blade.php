@@ -72,7 +72,7 @@
                 <strong>Subject: </strong>{{$meeting_subject ?? 'testing local'}}
                 <br>
                 <br>
-                <strong>Date/Time: </strong> {{($start_date ?? '2019-12-05 12:00:00') . ' >> ' . ($end_date ?? '2019-12-05 12:30:00')}}
+                <strong>Date/Time: </strong> {{($start_date ?? '2019-12-05 12:00:00') . '  >>  ' . ($end_date ?? '2019-12-05 12:30:00')}} UTC.
                 <br>
                 <br>
                 Would you provide an anonymous rating of the meeting? The more stars, the better!
