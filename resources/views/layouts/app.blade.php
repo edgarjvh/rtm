@@ -112,16 +112,7 @@
             position: relative;
         }
 
-        .events-bg{
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-image: url('../img/events-bg2.jpg');
-            background-repeat: repeat;
-            background-position-y: -5px;
-        }
+
         .dashboard-bg{
             position: absolute;
             width: 100%;

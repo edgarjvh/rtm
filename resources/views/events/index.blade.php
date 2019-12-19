@@ -1,7 +1,21 @@
+<link href="{{asset('css/events.css')}}">
 @extends('layouts.app')
 
 @section('content')
     <div class="events-bg"></div>
+
+    <div class="my-meetings-container">
+        <div class="my-meeting-score">
+            <p>
+                My Meeting Score
+            </p>
+
+            <div class="score">
+                3,49
+            </div>
+        </div>
+    </div>
+
     <div class="container pt-4 pb-4 h-100">
         <div class="col justify-content-center p-0 d-flex flex-column h-100">
             <div class="card border-0 w-100 flex-grow-1">

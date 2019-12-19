@@ -5,7 +5,7 @@ $start_date = '2019-12-06 15:30';
 $end_date = '2019-12-06 16:00';
 ?>
 
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Rate this meeting</title>
@@ -15,34 +15,91 @@ $end_date = '2019-12-06 16:00';
 
     <style type="text/css">
 
+        #tbl-main {
+            width: 100%;
+            max-width: 800px;
+            font-family: 'Source Sans Pro', sans-serif;
+            margin: 0 auto
+        }
+
+        p.lg-title {
+            margin: 0;
+            padding: 0;
+            text-align: left;
+            font-family: 'Merriweather', 'serif';
+            font-size: 60px;
+            color: #C96756;
+            font-weight: 900;
+            font-style: italic
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+            text-align: justify;
+            font-family: 'Merriweather', 'serif';
+            font-size: 16px;
+            font-weight: lighter;
+            font-style: italic;
+        }
+
+        p .bolder-text {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #tbl-meeting-info {
+            width: 60%;
+            margin: 10px auto;
+        }
+
+        #tbl-meeting-info td {
+            min-width: 33%;
+            font-family: 'Merriweather', 'serif';
+            font-size: 16px;
+            font-weight: lighter;
+            font-style: italic;
+        }
+
+        #tbl-meeting-info td.row {
+            color: #C96756;
+            font-weight: bold;
+        }
+
+        .rtm-logo {
+            width: 190px;
+        }
+
         .rating {
             unicode-bidi: bidi-override;
             direction: rtl;
             border: 2px solid #C96756;
-            border-radius: 30px;
+            border-radius: 40px;
             padding: 7px 0;
             background-color: #fff;
+            width: 190px;
         }
 
-        .rating > a{
+        .rating > a {
             width: 30px;
             text-decoration: none;
             display: inline-block;
-            color: rgba(0,0,0,0.6);
+            color: rgba(0, 0, 0, 0.6);
             font-size: 20px;
             font-style: normal;
             font-weight: 400;
         }
 
-        .rating > a > img{
+        .rating > a > img {
             width: 100%;
         }
 
-        .rating > a > img.star-on{
+        .rating > a > img.star-on {
             display: none;
         }
 
-        .rating > a > div{
+        .rating > a > div {
             font-family: 'Source Sans Pro', 'sans-serif';
             width: 100%;
             text-align: center;
@@ -52,27 +109,36 @@ $end_date = '2019-12-06 16:00';
         .rating > a:hover ~ a > img.star-off {
             display: none;
         }
+
         .rating > a:hover > img.star-on,
         .rating > a:hover ~ a > img.star-on {
             display: inline;
         }
 
+        @media screen and (max-width: 480px){
+            .rtm-logo{
+                width: 300px;
+            }
+        }
+
+
     </style>
 </head>
 <body style="padding: 0; margin: 0">
-<table style="width: 95%; max-width:800px;font-family: 'Source Sans Pro', sans-serif;margin:0 auto" border="0" cellpadding="0" cellspacing="0">
+<table border="0" cellpadding="0" cellspacing="0" id="tbl-main">
 
     <tr>
         <td>
-            <p style="margin: 0; padding: 0;text-align: left; font-family: 'Merriweather', 'serif';font-size: 60px; color: #C96756; font-weight: 900; font-style: italic">
+            <p class="lg-title">
                 Hello!
             </p>
         </td>
     </tr>
     <tr>
         <td>
-            <p style="margin: 0; padding: 30px 0 20px 0;text-align: justify; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: lighter; font-style: italic;">
-                You are receiving this email because <strong style="color: #000; text-decoration: none">{{$organizer_email}}</strong> hosted a meeting you attended.
+            <p style="padding: 30px 0 20px 0">
+                You are receiving this email because <span class="bolder-text">{{$organizer_email}}</span> hosted a
+                meeting you attended.
             </p>
 
         </td>
@@ -80,27 +146,27 @@ $end_date = '2019-12-06 16:00';
 
     <tr style="background-color: #f0f0f0;">
         <td>
-            <table style="width: 60%; margin: 10px auto;">
+            <table id="tbl-meeting-info">
                 <tr>
-                    <td style="min-width: 33%; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: lighter; font-style: italic;">
+                    <td class="tcol subject">
                         Subject
                     </td>
-                    <td style="min-width: 33%; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: lighter; font-style: italic;">
+                    <td class="tcol date">
                         Date
                     </td>
-                    <td style="min-width: 33%; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: lighter; font-style: italic;">
+                    <td class="tcol time">
                         Time
                     </td>
                 </tr>
 
                 <tr>
-                    <td style="min-width: 33%; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: Bold; font-style: italic; color: #C96756">
+                    <td class="tcol subject row">
                         {{$meeting_subject}}
                     </td>
-                    <td style="min-width: 33%; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: Bold; font-style: italic; color: #C96756">
+                    <td class="tcol date row">
                         {{date('Y-m-d', strtotime($start_date))}}
                     </td>
-                    <td style="min-width: 33%; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: Bold; font-style: italic; color: #C96756">
+                    <td class="tcol time row">
                         {{date('H:i', strtotime($start_date)) . ' > ' . date('H:i', strtotime($end_date))}}
                     </td>
                 </tr>
@@ -110,7 +176,7 @@ $end_date = '2019-12-06 16:00';
 
     <tr style="background-color: #354c58">
         <td style="padding-top: 15px">
-            <p style="color: #fff; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: Bold; font-style: italic; text-align: center">
+            <p style="color: #fff; text-align: center; padding: 10px 15px 20px 15px; font-weight: bold">
                 Would you provide an anonymous rating of the meeting?
             </p>
         </td>
@@ -119,7 +185,7 @@ $end_date = '2019-12-06 16:00';
     <tr style="background-color: #354c58">
         <td align="center">
 
-            <div style="width: 190px;padding-bottom: 30px; padding-top: 5px">
+            <div style="padding-bottom: 30px; padding-top: 5px">
                 <div class="rating">
                     <a href="{{env('APP_URL') . '/rating/' . $rating_key . '/' . $event_id . '/5'}}">
                         <img class="star-on" src="{{env('APP_URL') . '/img/ratingstar_on.png'}}" alt="">
@@ -148,31 +214,28 @@ $end_date = '2019-12-06 16:00';
 
                 </div>
             </div>
-
-
         </td>
     </tr>
 
     <tr>
         <td style="text-align: center; padding: 60px 0">
-            <img src="{{env('APP_URL') . '/img/logo.png'}}" style="width: 190px;"
-                 alt="">
+            <img src="{{env('APP_URL') . '/img/logo.png'}}" class="rtm-logo" alt="">
         </td>
     </tr>
 
     <tr>
         <td>
 
-            <p style="margin: 0; padding: 0;text-align: left; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: lighter; font-style: italic;">
-                This email was sent to you by <a style="color:#C96756;text-decoration: none; font-weight: bold" href="{{env('APP_URL') . ''}}">ratethismeeting.com</a>
-                if you
-                would like to rate your own meetings <a style="text-decoration: none; color: #000; font-weight: bold"
-                                                        href="{{env('APP_URL') . '/register'}}">click
+            <p>
+                This email was sent to you by <a style="color:#C96756;text-decoration: none; font-weight: bold"
+                                                 href="{{env('APP_URL') . ''}}">ratethismeeting.com</a>
+                if you would like to rate your own meetings <a class="bolder-text"
+                        href="{{env('APP_URL') . '/register'}}">click
                     here</a>
             </p>
-            <p style="margin: 0; padding: 0;text-align: left; font-family: 'Merriweather', 'serif';font-size: 16px; font-weight: lighter; font-style: italic;">
-                To block your email so that you do not receive emails from ratethismeeting again <a
-                        style="color:#000;text-decoration: none;font-weight: bold" href="{{env('APP_URL') . '/unsubscribe'}}">click here</a>
+            <p>
+                To block your email so that you do not receive emails from ratethismeeting again <a class="bolder-text"
+                        href="{{env('APP_URL') . '/unsubscribe'}}">click here</a>
             </p>
         </td>
     </tr>
