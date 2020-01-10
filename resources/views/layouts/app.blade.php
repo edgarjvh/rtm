@@ -18,23 +18,27 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&display=swap"
+          rel="stylesheet">
     <!-- Styles -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="css/reg.css">
+    <link href="{{ asset('css/topbar.css') }}" rel="stylesheet">
+
+
+
+    @yield('style-register')
+    @yield('style-login')
+    @yield('style-home')
+    @yield('style-verify-email')
 
     <style>
-        #app{
-            display:flex;
-            flex-direction:column;
-            height:100vh;
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
-        .policy{
-            color: #C96756 !important;
-        }
         .nav-link {
             border: 2px solid #C96756;
             min-width: 90px !important;
@@ -45,32 +49,6 @@
             padding: 2px 15px !important;
             background-color: transparent;
             cursor: pointer;
-        }
-        .dash-link {
-            border: 2px solid #C96756;
-            min-width: 90px !important;
-            margin-left: 15px;
-            text-align: center;
-            color: #C96756 !important;
-            border-radius: 5px;
-            padding: 10px 15px !important;
-            background-color: transparent;
-            cursor: pointer !important;
-            font-family: 'Source Code Pro',sans-serif;
-            text-decoration: none !important;
-        }
-        .dash-link.authorized {
-            border: 2px solid #C96756;
-            min-width: 90px !important;
-            margin-left: 15px;
-            text-align: center;
-            color: #fff !important;
-            border-radius: 5px;
-            padding: 10px 15px !important;
-            background-color: #C96756;
-            cursor: pointer !important;
-            font-family: 'Source Code Pro',sans-serif;
-            text-decoration: none !important;
         }
 
         @media screen and (max-width: 767px) {
@@ -84,26 +62,13 @@
                 border-radius: 5px;
                 padding: 2px 15px !important;
             }
-
-            .policy{
-                color: #C96756 !important;
-            }
         }
 
         input {
             background-color: #FAFAFA !important;
         }
 
-        .banner{
-            background-image: url({{Request::root() . '/img/ban.png'}});
-            background-repeat: repeat-x;
-            background-size: contain;
-            width: 100%;
-            height: 80px;
-            margin-bottom: 10px;
-        }
-
-        main.py-4{
+        main.py-4 {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             display: flex;
@@ -111,25 +76,7 @@
             flex-grow: 1;
             position: relative;
         }
-
-
-        .dashboard-bg{
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-image: url('../img/dashboard-bg.png');
-            background-repeat: no-repeat;
-            background-size: 90%;
-            background-position-y: center;
-            background-position-x: 20px;
-            opacity: 0.1;
-        }
     </style>
-
-
-
 </head>
 <body>
 <div id="app">
@@ -156,14 +103,14 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- Authentication Links -->
                     @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">LOGIN</a>
-                    </li>
-                    @if (Route::has('register'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">REGISTER</a>
+                            <a class="nav-link" href="{{ route('login') }}">LOGIN</a>
                         </li>
-                    @endif
+                        @if (Route::has('register'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">REGISTER</a>
+                            </li>
+                        @endif
                     @else
                         @if(Request::path() === '/')
                             <li class="nav-item">
@@ -172,41 +119,62 @@
                                 </a>
                             </li>
                         @else
-                            <li class="nav-item">
-                                <a class="nav-link" href="/events" role="button">
-                                    My Meetings
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            {{--<li class="nav-item">--}}
+                                {{--<a class="nav-link" href="/events" role="button">--}}
+                                    {{--My Meetings--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
+                            {{--<li class="nav-item dropdown">--}}
+                                {{--<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"--}}
+                                   {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>--}}
 
-                                    @if(!isset($organization) || $organization === '')
-                                        {{ Auth::user()->name }}
-                                    @else
-                                        {{ Auth::user()->name . ' (' . $organization . ')' }}
+                                    {{--@if(!isset($organization) || $organization === '')--}}
+                                        {{--{{ Auth::user()->name }}--}}
+                                    {{--@else--}}
+                                        {{--{{ Auth::user()->name . ' (' . $organization . ')' }}--}}
+                                    {{--@endif--}}
+
+                                    {{--<span class="caret"></span>--}}
+                                {{--</a>--}}
+
+                                {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
+                                    {{--<a class="dropdown-item" href="{{ route('logout') }}"--}}
+                                       {{--onclick="event.preventDefault();--}}
+                                                     {{--document.getElementById('logout-form').submit();">--}}
+                                        {{--{{ __('Logout') }}--}}
+                                    {{--</a>--}}
+
+                                    {{--<form id="logout-form" action="{{ route('logout') }}" method="POST"--}}
+                                          {{--style="display: none;">--}}
+                                        {{--@csrf--}}
+                                    {{--</form>--}}
+                                {{--</div>--}}
+                            {{--</li>--}}
+
+                            <li class="nav-item user-profile">
+                                <div class="user-info">
+                                    <div class="user-name">{{ Auth::user()->name }}</div>
+                                    <div class="user-email">{{ Auth::user()->email }}</div>
+
+                                    @if(isset($organization) && $organization !== '')
+                                        <div class="user-organization">{{$organization}}</div>
                                     @endif
 
-                                    <span class="caret"></span>
+                                </div>
+                                
+                                <div class="user-image">
+                                    <img src="{{asset('img/default-profile.png')}}" alt="">
+                                </div>
+
+                                <a class="logout-btn" href="{{route('logout')}}" title="Log Out">
+                                    <span class="fas fa-sign-out-alt"></span>
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                          style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
                             </li>
                         @endif
 
 
-                        @endguest
+                    @endguest
                 </ul>
             </div>
         </div>
@@ -216,8 +184,6 @@
         @yield('content')
     </main>
 </div>
-
-
 
 </body>
 </html>

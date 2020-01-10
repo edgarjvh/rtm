@@ -4,10 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/home');
+    return redirect('/login');
 });
 
 Route::get('/test', 'RatingsController@test');
+Route::get('/register-profile', function (){
+    return view('auth.register-profile');
+});
+
 
 Auth::routes(['verify' => true]);
 
@@ -31,11 +35,14 @@ Route::resource('cal', 'gCalendarController');
 Route::get('googleAuth', 'gCalendarController@googleAuth');
 Route::get('ref', 'gCalendarController@getByRefreshToken');
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
+Route::resource('/home', 'EventsController');
 Route::get('/login/{provider}', 'SocialAuthController@redirectToProvider');
 Route::get('/login/{provider}/callback', 'SocialAuthController@handleProviderCallback');
 
 Route::resource('events', 'EventsController');
+Route::get('/getMeetings', 'MeetingsController@getMeetings');
+Route::get('/score/{score}', 'ScoreController@getScore');
 
 Route::get('/rating/{rating_key}/{event_id}/{rate}', 'RatingsController@handleRating')->name('rating');
 
@@ -70,6 +77,10 @@ Route::get('/res', function (){
 Route::get('/sendEmail/{email}/{rating_key}/{event_id}', 'MessagesController@sendEmail');
 
 Route::get('/getip', 'EventsController@return_ip');
+
+
+
+
 
 
 class myUser{

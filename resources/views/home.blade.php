@@ -1,47 +1,89 @@
 @extends('layouts.app')
 
+@section('style-home')
+    <link rel="stylesheet" href="{{asset('css/home.css')}}">
+    <link rel="stylesheet" href="{{asset('css/all.css')}}">
+@endsection
+
 @section('content')
-    <div class="dashboard-bg"></div>
-    <div class="container h-100 d-flex flex-column">
-        <div class="row flex-grow-1 justify-content-center align-items-center p-4">
-            <div class="col text-center" style="margin-top: -150px">
-                <div style="font-family: 'Merriweather', Serif; font-size: 30px;color: #C96756;">Dashboard</div>
+    <div class="home-container">
 
+        <div class="title">
+            <p>
+                Hello! <span class="name">{{ Auth::user()->name }}</span>
+            </p>
+            <p>
+                please authorize your calendar
+            </p>
+        </div>
 
-                <div style="font-family: 'Source Code Pro',sans-serif; font-size: 1.4rem; color: rgba(0,0,0,0.4);margin: 10px 0">
-                    You are now logged in!
-                </div>
+        <p>
+            Choose the calendar you will use with Rate This Meeting
+        </p>
 
-                <div class="btn-container d-flex flex-row justify-content-center">
+        <div class="calendars">
+
+            <div class="calendar-container google">
+                <div class="calendar-icon">
+                    <img src="{{asset('img/gmail.png')}}" alt="">
                     @if($userLogged)
-
-                        @if($userLogged->google_access_token == null)
-                            <a href="/googleAuth" class="dash-link mt-2 ml-1 mr-1 flex-grow-1 font-weight-bold">
-                                Authorize your Google Calendar
-                            </a>
-                        @else
-                            <a href="#" class="dash-link authorized mt-2 ml-1 mr-1 flex-grow-1 font-weight-bold">
-                                Google Calendar is authorized
-                            </a>
-                        @endif
-
-                        @if($userLogged->outlook_access_token == null)
-                            <a href="/outlookauth" class="dash-link mt-2 ml-1 mr-1 flex-grow-1 font-weight-bold">
-                                Authorize your Outlook Calendar
-                            </a>
-                        @else
-                            <a href="#" class="dash-link authorized mt-2 ml-1 mr-1 flex-grow-1 font-weight-bold">Outlook Calendar is authorized</a>
-                        @endif
-
-                        @if($userLogged->apple_access_token == null)
-                            <a href="#" class="dash-link mt-2 ml-1 mr-1 flex-grow-1 font-weight-bold">Authorize your Apple Calendar</a>
-                        @else
-                            <a href="#" class="dash-link authorized mt-2 ml-1 mr-1 flex-grow-1 font-weight-bold">Apple Calendar is authorized</a>
+                        @if($userLogged->google_access_token != null)
+                            <span class="is-authorized fas fa-check-circle"></span>
                         @endif
                     @endif
+
+
+                </div>
+                <div class="calendar-title">
+                    Google Calendar
                 </div>
 
+                @if($userLogged)
 
+                    @if($userLogged->google_access_token == null)
+                        <a href="/googleAuth">
+                            Authorize
+                        </a>
+                    @endif
+                @endif
+
+            </div>
+
+            <div class="calendar-container outlook">
+
+                <div class="calendar-icon">
+                    <img src="{{asset('img/outlook1.png')}}" alt="">
+                    @if($userLogged)
+
+                        @if($userLogged->outlook_access_token != null)
+                            <span class="is-authorized fas fa-check-circle"></span>
+                        @endif
+                    @endif
+
+
+                </div>
+                <div class="calendar-title">
+                    Outlook Calendar
+                </div>
+
+                @if($userLogged)
+
+                    @if($userLogged->outlook_access_token == null)
+                        <a href="/outlookauth">
+                            Authorize
+                        </a>
+                    @endif
+                @endif
+
+            </div>
+            <div class="calendar-container add">
+                <a class="calendar-icon" href="#">
+                    <span class="fas fa-plus"></span>
+                </a>
+
+                <div class="calendar-title">
+                    Other online calendar
+                </div>
             </div>
         </div>
     </div>
