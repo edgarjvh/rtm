@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Event;
+use App\Exclusion;
 use App\RatingKey;
 use DateTime;
 use DateTimeZone;
@@ -212,22 +213,33 @@ class OutlookController extends Controller
 
                                             foreach ($event->getAttendees() as $attendee) {
                                                 if ($attendee['emailAddress']['address'] !== $organizer) {
-                                                    $rating_key = Str::random(100);
 
-                                                    $key = new RatingKey();
-                                                    $key->rating_key = $rating_key;
-                                                    $key->save();
+                                                    $excluded = Exclusion::where([
+                                                        'user_email' => $organizer,
+                                                        'email' => $attendee['emailAddress']['address']
+                                                    ])->first();
 
-                                                    app()->call('\App\Http\Controllers\MessagesController@sendEmail',
-                                                        [
-                                                            $attendee['emailAddress']['address'],
-                                                            $rating_key,
-                                                            $event->getId(),
-                                                            $event->getSubject(),
-                                                            $organizer,
-                                                            $start_date->format('Y-m-d H:i:s'),
-                                                            $end_date->format('Y-m-d H:i:s')
-                                                        ]);
+                                                    if ($excluded){
+                                                        echo 'Outlook Event Id: ' . $event->getId() . ' Excluded email (' . $attendee['emailAddress']['address'] . ')';
+                                                        echo '<br>';
+                                                    }else{
+                                                        $rating_key = Str::random(100);
+
+                                                        $key = new RatingKey();
+                                                        $key->rating_key = $rating_key;
+                                                        $key->save();
+
+                                                        app()->call('\App\Http\Controllers\MessagesController@sendEmail',
+                                                            [
+                                                                $attendee['emailAddress']['address'],
+                                                                $rating_key,
+                                                                $event->getId(),
+                                                                $event->getSubject(),
+                                                                $organizer,
+                                                                $start_date->format('Y-m-d H:i:s'),
+                                                                $end_date->format('Y-m-d H:i:s')
+                                                            ]);
+                                                    }
                                                 }
                                             }
 

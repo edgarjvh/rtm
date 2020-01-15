@@ -8,10 +8,13 @@ Route::get('/', function () {
 });
 
 Route::get('/test', 'RatingsController@test');
-Route::get('/register-profile', function (){
-    return view('auth.register-profile');
-});
 
+Route::get('/join', function (){
+    return view('auth.join');
+});
+Route::get('/create', function (){
+    return view('auth.create');
+});
 
 Auth::routes(['verify' => true]);
 
@@ -27,20 +30,22 @@ Route::post('/password/updating', 'Auth\ResetPasswordController@updating')->name
 Route::get('/getstarted', function (){
     return view('getstarted');
 });
-Route::get('/create', function (){
-    return view('create');
-});
 
 Route::resource('cal', 'gCalendarController');
 Route::get('googleAuth', 'gCalendarController@googleAuth');
 Route::get('ref', 'gCalendarController@getByRefreshToken');
 
-//Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/home', 'EventsController');
+
+Route::get('/organization-setup', 'OrganizationController@setOrg');
+Route::post('/save-organization', 'OrganizationController@saveOrganization')->name('save-organization');
+
+Route::post('/saveExclusion', 'ExclusionsController@saveExclusion');
+Route::post('/deleteExclusion', 'ExclusionsController@deleteExclusion');
+
 Route::get('/login/{provider}', 'SocialAuthController@redirectToProvider');
 Route::get('/login/{provider}/callback', 'SocialAuthController@handleProviderCallback');
 
-Route::resource('events', 'EventsController');
 Route::get('/getMeetings', 'MeetingsController@getMeetings');
 Route::get('/score/{score}', 'ScoreController@getScore');
 

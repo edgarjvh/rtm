@@ -15,11 +15,8 @@ class CreateExclusionsTable extends Migration
     {
         Schema::create('exclusions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id')->nullable(false);
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->string('user_email')->nullable(false);
+            $table->string('email')->nullable(false);
             $table->timestamps();
         });
     }

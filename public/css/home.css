@@ -1,0 +1,89 @@
+main.py-4 {
+  background-color: #EDEEF0 !important;
+}
+.home-container {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  height: 100%;
+}
+.home-container .title {
+  font-family: 'Merriweather', 'serif';
+  font-weight: bold;
+  font-style: italic;
+  color: #CC6666;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.home-container .title .name {
+  text-transform: uppercase;
+}
+.home-container .title p {
+  margin: 0;
+  line-height: 28px;
+}
+.home-container > p {
+  font-family: 'Source Sans Pro', 'sans-serif';
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 50px;
+}
+.home-container .calendars {
+  display: flex;
+}
+.home-container .calendars .calendar-container.add .calendar-icon {
+  box-shadow: unset;
+  border: 5px solid #CC6666;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-container .calendars .calendar-container.add .calendar-icon span {
+  font-size: 76px;
+}
+.home-container .calendars .calendar-container {
+  display: flex;
+  flex-direction: column;
+  margin-right: 70px;
+}
+.home-container .calendars .calendar-container .calendar-icon {
+  width: 170px;
+  height: 170px;
+  position: relative;
+  box-shadow: 0 1px 5px #000000;
+  padding: 20px;
+  border-radius: 10px 0 10px 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+.home-container .calendars .calendar-container .calendar-icon img {
+  width: 100%;
+}
+.home-container .calendars .calendar-container .calendar-icon span.is-authorized {
+  position: absolute;
+  color: green;
+  top: -10px;
+  right: -20px;
+  font-size: 36px;
+}
+.home-container .calendars .calendar-container .calendar-title {
+  text-align: center;
+  font-family: 'Source Sans Pro', 'sans-serif';
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.home-container .calendars .calendar-container > a {
+  text-decoration: none;
+  color: #CC6666;
+  text-align: center;
+  font-family: 'Source Sans Pro', 'sans-serif';
+  border: 2px solid #CC6666;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+/*# sourceMappingURL=home.css.map */

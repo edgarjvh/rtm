@@ -79,7 +79,12 @@ class MeetingsController extends Controller
                 }
             }
 
-            $global_avg = array_sum($rates) / count($rates);
+            if (count($rates) > 0){
+                $global_avg = array_sum($rates) / count($rates);
+            }else{
+                $global_avg = 0;
+            }
+
 
             $organization = '';
 

@@ -1,0 +1,84 @@
+main.py-4 {
+  background-color: #EDEEF0 !important;
+}
+.login-container {
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 70px 0;
+  margin: 0 auto;
+}
+.login-container .title {
+  font-family: 'Merriweather', 'serif';
+  font-weight: bold;
+  font-style: italic;
+  color: #CC6666;
+  font-size: 24px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+.login-container .log-options {
+  display: flex;
+  justify-content: space-between;
+}
+.login-container .log-options .opt.col {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.login-container .log-options .opt {
+  display: flex;
+  flex-grow: 1;
+  max-width: 48%;
+  flex-basis: 100%;
+  align-items: center;
+  position: relative;
+  padding-bottom: 50px;
+  cursor: pointer;
+}
+.login-container .log-options .opt form {
+  width: 90%;
+}
+.login-container .log-options .opt form .form-group.submit {
+  display: flex;
+  justify-content: flex-end;
+}
+.login-container .log-options .opt form input {
+  background-color: transparent !important;
+}
+.login-container .log-options .opt form input[type=email] {
+  text-transform: lowercase;
+}
+.login-container .log-options .opt form a.btn-link {
+  font-family: "Source Sans Pro", sans-serif;
+  color: #CC6666;
+  font-style: italic;
+}
+.login-container .log-options .opt img {
+  max-width: 270px;
+  max-height: 270px;
+  width: 270px;
+  margin-right: 20px;
+}
+.login-container .log-options .opt p {
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: lighter;
+  color: #5B5B5F;
+  font-size: 16px;
+}
+.login-container .log-options .opt p span.highlighted {
+  color: #CC6666;
+}
+.login-container .log-options .opt .bottom-line {
+  position: absolute;
+  width: 0;
+  height: 3px;
+  background-color: #CC6666;
+  bottom: 0;
+  transition: width ease 0.3s;
+}
+.login-container .log-options .opt:hover .bottom-line {
+  width: 100%;
+}
+/*# sourceMappingURL=login.css.map */

@@ -1,0 +1,54 @@
+.user-profile {
+  position: relative !important;
+  display: flex;
+  align-items: center;
+}
+.user-profile .user-info {
+  font-family: Source Sans Pro, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.user-profile .user-info .user-name {
+  color: #CC6666;
+  font-weight: bold;
+}
+.user-profile .user-info .user-email {
+  color: #CC6666;
+  font-weight: normal;
+}
+.user-profile .user-image {
+  width: 80px;
+  height: 80px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50% ;
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#a8a8a8+0,000000+100&0.65+0,0+100 */
+  background: -moz-linear-gradient(top, rgba(168, 168, 168, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(168, 168, 168, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(168, 168, 168, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a6a8a8a8', endColorstr='#00000000', GradientType=0);
+  /* IE6-9 */
+  overflow: hidden;
+  padding: 5px;
+  border: solid 2px #CC6666;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+}
+.user-profile .user-image img {
+  margin-top: 10px;
+}
+.user-profile .logout-btn {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  color: #CC6666;
+  text-decoration: none;
+  font-size: 16px;
+}
+/*# sourceMappingURL=topbar.css.map */

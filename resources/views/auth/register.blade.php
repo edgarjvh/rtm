@@ -13,7 +13,7 @@
         </div>
 
         <div class="reg-options">
-            <a class="opt" href="#">
+            <a class="opt" href="/join">
                 <img src="img/reg-opt-1.png" alt="">
 
                 <p>
@@ -23,7 +23,7 @@
                 <div class="bottom-line"></div>
             </a>
 
-            <a class="opt" href="#">
+            <a class="opt" href="/create">
                 <img src="img/reg-opt-2.png" alt="">
 
                 <p>

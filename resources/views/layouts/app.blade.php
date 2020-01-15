@@ -21,13 +21,13 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&display=swap"
           rel="stylesheet">
     <!-- Styles -->
-
+    <link rel="stylesheet" href="{{asset('css/all.css')}}">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/topbar.css') }}" rel="stylesheet">
 
 
-
     @yield('style-register')
+    @yield('style-reg-org')
     @yield('style-login')
     @yield('style-home')
     @yield('style-verify-email')
@@ -120,35 +120,35 @@
                             </li>
                         @else
                             {{--<li class="nav-item">--}}
-                                {{--<a class="nav-link" href="/events" role="button">--}}
-                                    {{--My Meetings--}}
-                                {{--</a>--}}
+                            {{--<a class="nav-link" href="/events" role="button">--}}
+                            {{--My Meetings--}}
+                            {{--</a>--}}
                             {{--</li>--}}
                             {{--<li class="nav-item dropdown">--}}
-                                {{--<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"--}}
-                                   {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>--}}
+                            {{--<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"--}}
+                            {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>--}}
 
-                                    {{--@if(!isset($organization) || $organization === '')--}}
-                                        {{--{{ Auth::user()->name }}--}}
-                                    {{--@else--}}
-                                        {{--{{ Auth::user()->name . ' (' . $organization . ')' }}--}}
-                                    {{--@endif--}}
+                            {{--@if(!isset($organization) || $organization === '')--}}
+                            {{--{{ Auth::user()->name }}--}}
+                            {{--@else--}}
+                            {{--{{ Auth::user()->name . ' (' . $organization . ')' }}--}}
+                            {{--@endif--}}
 
-                                    {{--<span class="caret"></span>--}}
-                                {{--</a>--}}
+                            {{--<span class="caret"></span>--}}
+                            {{--</a>--}}
 
-                                {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
-                                    {{--<a class="dropdown-item" href="{{ route('logout') }}"--}}
-                                       {{--onclick="event.preventDefault();--}}
-                                                     {{--document.getElementById('logout-form').submit();">--}}
-                                        {{--{{ __('Logout') }}--}}
-                                    {{--</a>--}}
+                            {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
+                            {{--<a class="dropdown-item" href="{{ route('logout') }}"--}}
+                            {{--onclick="event.preventDefault();--}}
+                            {{--document.getElementById('logout-form').submit();">--}}
+                            {{--{{ __('Logout') }}--}}
+                            {{--</a>--}}
 
-                                    {{--<form id="logout-form" action="{{ route('logout') }}" method="POST"--}}
-                                          {{--style="display: none;">--}}
-                                        {{--@csrf--}}
-                                    {{--</form>--}}
-                                {{--</div>--}}
+                            {{--<form id="logout-form" action="{{ route('logout') }}" method="POST"--}}
+                            {{--style="display: none;">--}}
+                            {{--@csrf--}}
+                            {{--</form>--}}
+                            {{--</div>--}}
                             {{--</li>--}}
 
                             <li class="nav-item user-profile">
@@ -161,14 +161,23 @@
                                     @endif
 
                                 </div>
-                                
+
                                 <div class="user-image">
                                     <img src="{{asset('img/default-profile.png')}}" alt="">
                                 </div>
 
-                                <a class="logout-btn" href="{{route('logout')}}" title="Log Out">
+                                <a class="logout-btn" href="{{route('logout')}}" title="Log Out"
+                                   onclick="
+                                   event.preventDefault();
+                                   document.getElementById('logout-form').submit();"
+                                >
                                     <span class="fas fa-sign-out-alt"></span>
                                 </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                      style="display: none;">
+                                    @csrf
+                                </form>
 
                             </li>
                         @endif

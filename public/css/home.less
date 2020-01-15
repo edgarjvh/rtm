@@ -1,0 +1,104 @@
+main.py-4{
+  background-color: #EDEEF0 !important;
+}
+
+.home-container{
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  height: 100%;
+
+  .title{
+    font-family: 'Merriweather', 'serif';
+    font-weight: bold;
+    font-style: italic;
+    color: #CC6666;
+    font-size: 24px;
+    margin-bottom: 20px;
+
+    .name{
+      text-transform: uppercase;
+    }
+
+    p{
+      margin: 0;
+      line-height: 28px;
+    }
+  }
+
+  > p{
+    font-family: 'Source Sans Pro', 'sans-serif';
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 50px;
+  }
+
+  .calendars{
+    display: flex;
+
+    .calendar-container.add{
+      .calendar-icon{
+        box-shadow: unset;
+        border: 5px solid #CC6666;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        span{
+          font-size: 76px;
+        }
+      }
+    }
+
+    .calendar-container{
+      display: flex;
+      flex-direction: column;
+      margin-right: 70px;
+
+      .calendar-icon{
+        width: 170px;
+        height: 170px;
+        position: relative;
+        box-shadow: 0 1px 5px rgba(0,0,0,1);
+        padding: 20px;
+        border-radius: 10px 0 10px 0;
+        border: 1px solid rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+
+        img{
+          width: 100%;
+        }
+
+        span.is-authorized{
+          position: absolute;
+          color: green;
+          top: -10px;
+          right: -20px;
+          font-size: 36px;
+        }
+      }
+
+      .calendar-title{
+        text-align: center;
+        font-family: 'Source Sans Pro', 'sans-serif';
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      > a{
+        text-decoration: none;
+        color: #CC6666;
+        text-align: center;
+        font-family: 'Source Sans Pro', 'sans-serif';
+        border: 2px solid #CC6666;
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 3px 5px;
+        border-radius: 5px;
+      }
+    }
+  }
+}

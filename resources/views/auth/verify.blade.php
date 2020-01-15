@@ -15,7 +15,7 @@
                     <div class="title" style="font-family: Merriweather, Serif; font-size: 24px;color: #C96756;">{{ __('Verify Your Email Address') }}</div>
 
                     <p style="font-family: 'Source Sans Pro',sans-serif; font-size: 1.1rem" class="mt-2">
-                        @if ($resend)
+                        @if (isset($resend))
                             <div class="alert alert-success" role="alert">
                                 {{ __('A fresh verification link has been sent to your email address.') }}
                             </div>

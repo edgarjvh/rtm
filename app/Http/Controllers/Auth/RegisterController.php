@@ -7,6 +7,7 @@ use App\Organization;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -51,7 +52,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'organization' => ['required', 'string', 'max:191'],
+//            'organization' => ['required', 'string', 'max:191'],
         ]);
     }
 
@@ -63,35 +64,47 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $org = Organization::where('name', $data['organization'])->first();
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => strtolower($data['email']),
+            'organization_id' => 0,
+            'organization_owner' => $data['owner'],
+            'password' => Hash::make($data['password']),
+            'verify_token' => Str::random(40),
+        ]);
+        $curUser = User::findOrFail($user->id);
+        $this->sendEmail($curUser);
+        return $user;
 
-        if($org){
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => strtolower($data['email']),
-                'organization_id' => $org->id,
-                'organization_owner' => 0,
-                'password' => Hash::make($data['password']),
-                'verify_token' => Str::random(40),
-            ]);
-            $curUser = User::findOrFail($user->id);
-            $this->sendEmail($curUser);
-            return $user;
-        }else{
-            $org = Organization::create(['name' => $data['organization']]);
-
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => strtolower($data['email']),
-                'organization_id' => $org->id,
-                'organization_owner' => 1,
-                'password' => Hash::make($data['password']),
-                'verify_token' => Str::random(40),
-            ]);
-            $curUser = User::findOrFail($user->id);
-            $this->sendEmail($curUser);
-            return $user;
-        }
+//        $org = Organization::where('name', $data['organization'])->first();
+//
+//        if($org){
+//            $user = User::create([
+//                'name' => $data['name'],
+//                'email' => strtolower($data['email']),
+//                'organization_id' => $org->id,
+//                'organization_owner' => 0,
+//                'password' => Hash::make($data['password']),
+//                'verify_token' => Str::random(40),
+//            ]);
+//            $curUser = User::findOrFail($user->id);
+//            $this->sendEmail($curUser);
+//            return $user;
+//        }else{
+//            $org = Organization::create(['name' => $data['organization']]);
+//
+//            $user = User::create([
+//                'name' => $data['name'],
+//                'email' => strtolower($data['email']),
+//                'organization_id' => $org->id,
+//                'organization_owner' => 1,
+//                'password' => Hash::make($data['password']),
+//                'verify_token' => Str::random(40),
+//            ]);
+//            $curUser = User::findOrFail($user->id);
+//            $this->sendEmail($curUser);
+//            return $user;
+//        }
     }
 
     public function verifyEmailFirst($email){
@@ -140,4 +153,6 @@ class RegisterController extends Controller
             return view('error')->with('message', 'Invalid verification token');
         }
     }
+
+
 }

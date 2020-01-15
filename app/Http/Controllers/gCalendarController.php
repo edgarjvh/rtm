@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Event;
+use App\Exclusion;
 use App\RatingKey;
 use DateTime;
 use DateTimeZone;
@@ -59,7 +60,8 @@ class gCalendarController extends Controller
         }
     }
 
-    public function getByRefreshToken()    {
+    public function getByRefreshToken()
+    {
 
         $users = User::all();
 
@@ -114,10 +116,10 @@ class gCalendarController extends Controller
                                         // check if user is also organizer
                                         if (strtolower($user->email) == strtolower($item['organizer']['email'])) {
 
-                                            if ($item['attendees']){
+                                            if ($item['attendees']) {
                                                 $acceptedCount = 0;
 
-                                                foreach ($item['attendees'] as $att){
+                                                foreach ($item['attendees'] as $att) {
                                                     if ($att['responseStatus'] == "accepted") $acceptedCount++;
                                                 }
 
@@ -128,33 +130,43 @@ class gCalendarController extends Controller
                                                     $eventExist = Event::where('event_id', $item['id'])->first();
 
                                                     if (!$eventExist) {
-                                                        $start_date = new DateTime( $item['start']['dateTime']);
+                                                        $start_date = new DateTime($item['start']['dateTime']);
                                                         $start_date->setTimezone(new DateTimeZone("UTC"));
-                                                        $end_date = new DateTime( $item['end']['dateTime']);
+                                                        $end_date = new DateTime($item['end']['dateTime']);
                                                         $end_date->setTimezone(new DateTimeZone("UTC"));
 
                                                         for ($x = 0; $x < count($item['attendees']); $x++) {
                                                             $attendee = $item['attendees'][$x];
 
-                                                            if ($attendee['responseStatus'] == "accepted"){
-                                                                // if attendee is not the organizer, sent email for rating
-                                                                if (strtolower($item['organizer']['email']) != strtolower($attendee['email'])) {
-                                                                    $rating_key = Str::random(100);
+                                                            $excluded = Exclusion::where([
+                                                                'user_email' => strtolower($user->email),
+                                                                'email' => $attendee['email']
+                                                            ])->first();
 
-                                                                    $key = new RatingKey();
-                                                                    $key->rating_key = $rating_key;
-                                                                    $key->save();
+                                                            if ($excluded) {
+                                                                echo 'Google Event Id: ' . $item['id'] . ' Excluded email (' . $attendee['email'] . ')';
+                                                                echo '<br>';
+                                                            } else {
+                                                                if ($attendee['responseStatus'] == "accepted") {
+                                                                    // if attendee is not the organizer, sent email for rating
+                                                                    if (strtolower($item['organizer']['email']) != strtolower($attendee['email'])) {
+                                                                        $rating_key = Str::random(100);
 
-                                                                    app()->call('\App\Http\Controllers\MessagesController@sendEmail',
-                                                                        [
-                                                                            $attendee['email'],
-                                                                            $rating_key,
-                                                                            $item['id'],
-                                                                            $item['summary'],
-                                                                            $item['organizer']['email'],
-                                                                            $start_date->format('Y-m-d H:i:s'),
-                                                                            $end_date->format('Y-m-d H:i:s')
-                                                                        ]);
+                                                                        $key = new RatingKey();
+                                                                        $key->rating_key = $rating_key;
+                                                                        $key->save();
+
+                                                                        app()->call('\App\Http\Controllers\MessagesController@sendEmail',
+                                                                            [
+                                                                                $attendee['email'],
+                                                                                $rating_key,
+                                                                                $item['id'],
+                                                                                $item['summary'],
+                                                                                $item['organizer']['email'],
+                                                                                $start_date->format('Y-m-d H:i:s'),
+                                                                                $end_date->format('Y-m-d H:i:s')
+                                                                            ]);
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -169,12 +181,12 @@ class gCalendarController extends Controller
                                                         $event->title = $item['summary'];
                                                         $event->description = $item['description'];
                                                         $event->save();
-                                                    }else{
+                                                    } else {
                                                         echo 'Google Event Id: ' . $item['id'] . ' already emailed';
                                                         echo '<br>';
                                                     }
 
-                                                }else{
+                                                } else {
                                                     echo 'Google Event Id: ' . $item['id'] . ' - ' . $acceptedCount . ' attendees accepted';
                                                     echo '<br>';
                                                 }

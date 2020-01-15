@@ -1,0 +1,254 @@
+main.py-4 {
+  position: relative;
+}
+.events-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: url('../img/events-bg3.jpg');
+  background-repeat: repeat;
+  background-position-y: -5px;
+  z-index: -1;
+  opacity: 0.5;
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+}
+.main-container .meeting-score {
+  color: #CC6666;
+  height: 150px;
+}
+.main-container .meeting-score .title {
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 600;
+}
+.main-container .meeting-score .score {
+  font-size: 108px;
+  line-height: 100px;
+  height: 100%;
+  display: flex;
+}
+.main-container .meeting-score .score .sharing {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 20px;
+}
+.main-container .meeting-score .score .sharing .linkedin span {
+  line-height: unset !important;
+}
+.main-container .tabs {
+  font-family: Merriweather, 'serif';
+  font-weight: bold;
+  display: flex;
+}
+.main-container .tabs .tab.active {
+  background-color: #fff;
+  color: #CC6666;
+}
+.main-container .tabs .tab {
+  width: 120px;
+  padding: 10px 0;
+  color: #fff;
+  background-color: #CC6666;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+  margin-right: 3px;
+}
+.main-container .tabs-container {
+  background-color: #fff;
+  padding: 20px;
+}
+.main-container .tabs-container .tab-content {
+  display: none;
+}
+.main-container .tabs-container .tab-content.active {
+  display: block;
+}
+.main-container .tabs-container .tab-my-meetings table {
+  border: 0;
+}
+.main-container .tabs-container .tab-my-meetings table th {
+  border: 0;
+}
+.main-container .tabs-container .tab-settings .tbl-settings {
+  display: flex;
+  flex-direction: column;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 15px 10px;
+  align-items: center;
+  position: relative;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .not-clickable {
+  pointer-events: none;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .check-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .check-container input[type=checkbox] {
+  display: none;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .check-container input[type=checkbox]:checked ~ label span {
+  opacity: 1;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .check-container label {
+  border: 1px solid #CC6666;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .check-container label span {
+  transition: ease 0.3s;
+  opacity: 0;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow > label {
+  margin: 0;
+  cursor: pointer;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow > label img {
+  max-width: 20px;
+  max-height: 20px;
+  margin-right: 5px;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow a {
+  text-decoration: none;
+  cursor: pointer;
+  padding: 2px 5px;
+  border: 2px solid #CC6666;
+  color: #CC6666;
+  text-transform: uppercase;
+  margin-left: 15px;
+  border-radius: 3px;
+  font-weight: 500;
+  transition: ease 0.3s;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow a:hover {
+  background-color: #CC6666;
+  color: #FFF;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container {
+  display: flex;
+  flex-direction: column;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container > p {
+  color: #CC6666;
+  margin-top: 15px;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion {
+  position: relative;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .input {
+  pointer-events: none;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 0 10px;
+  border-radius: 15px;
+  background-color: transparent;
+  display: flex;
+  min-width: 5px;
+  text-transform: lowercase;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .input[contenteditable=true] {
+  pointer-events: unset;
+  border: 1px solid #CC6666;
+  color: #CC6666;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .input[contenteditable=true] ~ .actions {
+  opacity: 1;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .input[contenteditable=true] ~ .actions .minus {
+  display: none;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .input[contenteditable=true] ~ .actions .check,
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .input[contenteditable=true] ~ .actions .times {
+  display: initial;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .actions {
+  position: absolute;
+  right: -5px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 0;
+  font-size: 12px;
+  opacity: 0;
+  transition: ease 0.3s;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .actions .check,
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .actions .times {
+  display: none;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion .actions span {
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion:hover .input:not([contenteditable=true]) ~ .actions {
+  opacity: 1;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion:hover .input:not([contenteditable=true]) ~ .actions .check,
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .excluded-email-list .exclusion:hover .input:not([contenteditable=true]) ~ .actions .times {
+  display: none;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .btn-add-exclusion {
+  display: flex;
+  align-items: center;
+  color: #CC6666;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .btn-add-exclusion > div {
+  font-size: 12px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #CC6666;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+  transition: ease 0.3s;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .btn-add-exclusion.disabled {
+  color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .btn-add-exclusion.disabled > div {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .exclusions-container .btn-add-exclusion:hover > div {
+  color: #FFF;
+  background-color: #CC6666;
+}
+/*# sourceMappingURL=meetings.css.map */

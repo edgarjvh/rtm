@@ -11,6 +11,6 @@ class Exclusion extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'email'
+        'user_email', 'email'
     ];
 }
