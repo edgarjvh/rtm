@@ -19,9 +19,9 @@ main.py-4 {
 .main-container {
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 1024px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 0;
 
   .meeting-score {
     color: #CC6666;
@@ -111,6 +111,12 @@ main.py-4 {
           padding: 15px 10px;
           align-items: center;
           position: relative;
+
+          > span{
+            position: absolute;
+            right: 0;
+            display: none;
+          }
 
           .not-clickable {
             pointer-events: none;

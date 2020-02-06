@@ -16,9 +16,9 @@ main.py-4 {
 .main-container {
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 1024px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 0;
 }
 .main-container .meeting-score {
   color: #CC6666;
@@ -93,6 +93,11 @@ main.py-4 {
   padding: 15px 10px;
   align-items: center;
   position: relative;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow > span {
+  position: absolute;
+  right: 0;
+  display: none;
 }
 .main-container .tabs-container .tab-settings .tbl-settings .trow .not-clickable {
   pointer-events: none;

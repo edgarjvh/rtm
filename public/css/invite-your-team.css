@@ -1,0 +1,88 @@
+main.py-4 {
+  background-color: #EDEEF0 !important;
+}
+.main-container {
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 70px 0;
+  margin: 0 auto;
+}
+.main-container .msg {
+  background-color: rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 3px;
+  margin-bottom: 15px;
+  display: flex;
+  font-weight: bold;
+}
+.main-container .msg .msg-sep {
+  margin: 0 10px;
+}
+.main-container .msg .sent {
+  color: darkgreen;
+}
+.main-container .msg .not-sent {
+  color: darkred;
+}
+.main-container .title {
+  font-family: 'Merriweather', 'serif';
+  font-weight: bold;
+  font-style: italic;
+  color: #CC6666;
+  font-size: 24px;
+  width: 100%;
+}
+.main-container .subtitle {
+  font-family: "Source Sans", sans-serif;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 16px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+.main-container .inv-options {
+  display: flex;
+}
+.main-container .inv-options .opt {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.main-container .inv-options .opt input[type=email],
+.main-container .inv-options .opt textarea {
+  background-color: transparent !important;
+  text-transform: lowercase;
+}
+.main-container .inv-options .opt textarea {
+  min-height: 120px;
+  max-height: 200px;
+}
+.main-container .inv-options .opt .add-invitation-btn {
+  font-family: "Source Sans", sans-serif;
+  text-align: right;
+  color: #CC6666;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+}
+.main-container .inv-options .opt .submit {
+  display: flex;
+  justify-content: flex-end;
+}
+.main-container .inv-options .opt .submit button[type=submit] {
+  transition: ease 0.2s;
+}
+.main-container .inv-options .opt .submit button[type=submit]:hover {
+  background-color: #CC6666;
+  color: #fff !important;
+}
+.main-container .inv-options .opt:last-child {
+  margin-left: 50px;
+}
+.main-container .inv-options img {
+  width: 400px;
+}
+/*# sourceMappingURL=invite-your-team.css.map */

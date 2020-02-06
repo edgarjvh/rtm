@@ -26,7 +26,8 @@
                     <div class="linkedin">
                         <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
                         <script type="IN/Share"
-                                data-url="{{env('APP_URL') . '/score/' . number_format($global_avg, 2)}}"></script>
+                                data-url="{{env('APP_URL') . '/score/' . number_format($global_avg, 2)}}"
+                        data-image="{{asset('img/ban.png')}}"></script>
                     </div>
                 </div>
             </div>
@@ -100,7 +101,12 @@
                 <div class="tbl-settings">
                     <div class="trow">
                         <div class="check-container">
-                            <input type="checkbox" id="cbox-set-send-rating-emails" checked>
+                            @if($settings->sending_rating_emails == 1)
+                                <input type="checkbox" id="cbox-set-send-rating-emails" checked>
+                            @else
+                                <input type="checkbox" id="cbox-set-send-rating-emails">
+                            @endif
+
                             <label for="cbox-set-send-rating-emails">
                                 <span class="fas fa-check"></span>
                             </label>
@@ -110,11 +116,16 @@
                             Send automatic rating emails to all attendees once the meeting is over.
                         </label>
 
+                        <span class="fas fa-spin fa-spinner loader"></span>
                     </div>
 
                     <div class="trow">
                         <div class="check-container">
-                            <input type="checkbox" id="cbox-set-allow-sharing" checked>
+                            @if($settings->sharing_meeting_score == 1)
+                                <input type="checkbox" id="cbox-set-allow-sharing" checked>
+                            @else
+                                <input type="checkbox" id="cbox-set-allow-sharing">
+                            @endif
                             <label for="cbox-set-allow-sharing">
                                 <span class="fas fa-check"></span>
                             </label>
@@ -123,6 +134,8 @@
                         <label for="cbox-set-allow-sharing">
                             Allow to share my meeting score.
                         </label>
+
+                        <span class="fas fa-spin fa-spinner loader"></span>
                     </div>
 
                     <div class="trow">

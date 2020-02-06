@@ -6,6 +6,7 @@ use App\Event;
 use App\Exclusion;
 use App\Organization;
 use App\Rating;
+use App\Setting;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,11 +35,17 @@ class EventsController extends Controller
                 if ($this->user->organization_id == 0) {
                     Redirect::to('/organization-setup')->send();
                 }
+
+                if (!$this->user->google_access_token && !$this->user->outlook_access_token){
+                    Redirect::to('/calendar-authorization')->send();
+                }
+
+                if ($this->user->has_invited == 0){
+                    Redirect::to('/invite-your-team')->send();
+                }
             }
             return $next($request);
         });
-
-
     }
 
     /**
@@ -50,6 +57,11 @@ class EventsController extends Controller
     {
         $user = Auth::user();
         $exclusions = Exclusion::where('user_email', $user->email)->get();
+        $settings = Setting::firstOrNew(['user_id' => $user->id], [
+            'sending_rating_emails' => 1,
+            'sharing_meeting_score' => 1
+        ]);
+        $settings->save();
 
         $events = array();
 
@@ -106,7 +118,15 @@ class EventsController extends Controller
         $timezone = 'America/Caracas';
 //        $timezone = $this->get_local_time();
 
-        return view('events.index')->with(['newEvents' => $events, 'organization' => $organization, 'tz' => $timezone, 'global_avg' => $global_avg, 'userLogged' => $user, 'exclusions' => $exclusions]);
+        return view('events.index')->with([
+            'newEvents' => $events,
+            'organization' => $organization,
+            'tz' => $timezone,
+            'global_avg' => $global_avg,
+            'userLogged' => $user,
+            'exclusions' => $exclusions,
+            'settings' => $settings
+        ]);
     }
 
 

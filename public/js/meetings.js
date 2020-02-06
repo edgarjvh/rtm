@@ -12,6 +12,64 @@ $(document).ready(function () {
         tabsContainer.find('.tab-content.' + name).addClass('active');
     });
 
+    $(document).on('change', '#cbox-set-send-rating-emails', function (e) {
+        let input = $(this);
+        let checked = input.is(':checked');
+        let trow = input.closest('.trow');
+        let loader = trow.find('.loader');
+
+        loader.show();
+
+        $.ajax({
+            type: 'post',
+            url: '/setSendingRatingEmails',
+            dataType: 'json',
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'status': checked
+            },
+            success: function (response) {
+                console.log(response);
+
+                if (response.result === 'OK') {
+                    loader.hide();
+                }
+            },
+            error: function (a, b, c) {
+                console.log('Error');
+            }
+        });
+    });
+
+    $(document).on('change', '#cbox-set-allow-sharing', function (e) {
+        let input = $(this);
+        let checked = input.is(':checked');
+        let trow = input.closest('.trow');
+        let loader = trow.find('.loader');
+
+        loader.show();
+
+        $.ajax({
+            type: 'post',
+            url: '/setSharingMeetingScore',
+            dataType: 'json',
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'status': checked
+            },
+            success: function (response) {
+                console.log(response);
+
+                if (response.result === 'OK') {
+                    loader.hide();
+                }
+            },
+            error: function (a, b, c) {
+                console.log('Error');
+            }
+        });
+    });
+
     $(document).on('click', '.exclusion .times', function (e) {
         $(this).closest('.exclusion').remove();
         $('.btn-add-exclusion').removeClass('disabled');
@@ -21,37 +79,37 @@ $(document).ready(function () {
         let exclusion = $(this).closest('.exclusion');
         let input = exclusion.find('.input');
 
-        if (!validateEmail(input.text().trim())){
+        if (!validateEmail(input.text().trim())) {
             alert("You have entered an invalid email address!");
             return;
         }
 
-       $.ajax({
-           type: 'post',
-           url: '/saveExclusion',
-           dataType: 'json',
-           data: {
-               '_token': $('input[name=_token]').val(),
-               'email': input.text().trim()
-           },
-           success: function (response) {
-               if (response.result === 'OK'){
-                   input.attr('contenteditable', false);
-                   $('.btn-add-exclusion').removeClass('disabled');
-               }
+        $.ajax({
+            type: 'post',
+            url: '/saveExclusion',
+            dataType: 'json',
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'email': input.text().trim()
+            },
+            success: function (response) {
+                if (response.result === 'OK') {
+                    input.attr('contenteditable', false);
+                    $('.btn-add-exclusion').removeClass('disabled');
+                }
 
-               if (response.result === 'DUPLICATED'){
-                   alert("Exclusion already exists");
-               }
-           },
-           error: function (a,b,c) {
-               console.log('Error');
-           }
-       })
+                if (response.result === 'DUPLICATED') {
+                    alert("Exclusion already exists");
+                }
+            },
+            error: function (a, b, c) {
+                console.log('Error');
+            }
+        })
     });
 
     $(document).on('click', '.exclusion .minus', function (e) {
-        if (confirm('Are you sure to remove the selected exclusion?')){
+        if (confirm('Are you sure to remove the selected exclusion?')) {
             let exclusion = $(this).closest('.exclusion');
             let input = exclusion.find('.input');
 
@@ -64,12 +122,12 @@ $(document).ready(function () {
                     'email': input.text().trim()
                 },
                 success: function (response) {
-                    if (response.result === 'OK'){
+                    if (response.result === 'OK') {
                         exclusion.remove();
                         $('.btn-add-exclusion').removeClass('disabled');
                     }
                 },
-                error: function (a,b,c) {
+                error: function (a, b, c) {
                     console.log('Error');
                 }
             })

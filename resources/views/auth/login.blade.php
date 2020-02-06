@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('style-login')
+    <link rel="stylesheet" href="{{asset('css/all.css')}}">
     <link rel="stylesheet" href="{{asset('css/login.css')}}">
 @endsection
 
@@ -69,6 +70,24 @@
                         </button>
                     </div>
                 </form>
+
+                <div class="or-login-with">
+                    <div class="line-container">
+                        <div class="left-line"></div>
+                        <div class="center-line">Or Login With</div>
+                        <div class="right-line"></div>
+                    </div>
+                </div>
+
+                <div class="social-buttons">
+                    <a href="{{url('/login/linkedin')}}" title="LinkedIn">
+                        <span class="fab fa-linkedin"></span>
+                    </a>
+
+                    <a href="{{url('/login/google')}}" title="Google">
+                        <span class="fab fa-google"></span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

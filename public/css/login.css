@@ -35,7 +35,7 @@ main.py-4 {
   align-items: center;
   position: relative;
   padding-bottom: 50px;
-  cursor: pointer;
+  flex-direction: column;
 }
 .login-container .log-options .opt form {
   width: 90%;
@@ -77,6 +77,33 @@ main.py-4 {
   background-color: #CC6666;
   bottom: 0;
   transition: width ease 0.3s;
+}
+.login-container .log-options .opt .or-login-with {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.login-container .log-options .opt .or-login-with .line-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.login-container .log-options .opt .or-login-with .line-container .left-line,
+.login-container .log-options .opt .or-login-with .line-container .right-line {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.2);
+  flex-grow: 1;
+}
+.login-container .log-options .opt .or-login-with .line-container .center-line {
+  margin: 0 5px;
+}
+.login-container .log-options .opt .social-buttons a {
+  font-size: 32px;
+  color: #CC6666;
+  margin: 0 5px;
 }
 .login-container .log-options .opt:hover .bottom-line {
   width: 100%;

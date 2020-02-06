@@ -148,7 +148,12 @@ class RegisterController extends Controller
                 'verify_token' => null
             ));
 
-            return redirect(route('login'));
+            if (Auth::loginUsingId($user->id)){
+                return redirect(route('/home'));
+            }else{
+                return redirect(route('/login'));
+            }
+
         }else{
             return view('error')->with('message', 'Invalid verification token');
         }

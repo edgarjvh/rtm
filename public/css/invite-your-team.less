@@ -1,0 +1,106 @@
+main.py-4 {
+  background-color: #EDEEF0 !important;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 70px 0;
+  margin: 0 auto;
+
+  .msg {
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 3px;
+    margin-bottom: 15px;
+    display: flex;
+    font-weight: bold;
+
+    .msg-sep {
+      margin: 0 10px;
+    }
+    .sent {
+      color: darkgreen;
+    }
+
+    .not-sent {
+      color: darkred;
+    }
+
+  }
+
+  .title {
+    font-family: 'Merriweather', 'serif';
+    font-weight: bold;
+    font-style: italic;
+    color: #CC6666;
+    font-size: 24px;
+    width: 100%;
+  }
+
+  .subtitle {
+    font-family: "Source Sans", sans-serif;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .inv-options {
+    display: flex;
+
+    .opt {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+
+      input[type=email], textarea {
+        background-color: transparent !important;
+        text-transform: lowercase;
+      }
+
+      textarea {
+        min-height: 120px;
+        max-height: 200px;
+      }
+
+      .add-invitation-btn {
+        font-family: "Source Sans", sans-serif;
+        text-align: right;
+        color: #CC6666;
+        font-style: italic;
+        font-weight: bold;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .submit {
+        display: flex;
+        justify-content: flex-end;
+
+        button[type=submit] {
+          transition: ease 0.2s;
+        }
+
+        button[type=submit]:hover {
+          background-color: #CC6666;
+          color: #fff !important;
+        }
+      }
+
+    }
+
+    .opt:last-child {
+      margin-left: 50px;
+    }
+
+    img {
+      width: 400px;
+    }
+
+  }
+
+}

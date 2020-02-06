@@ -37,7 +37,7 @@ main.py-4{
       align-items: center;
       position: relative;
       padding-bottom: 50px;
-      cursor: pointer;
+      flex-direction: column;
 
       form{
         width: 90%;
@@ -87,6 +87,39 @@ main.py-4{
         background-color: #CC6666;
         bottom: 0;
         transition: width ease 0.3s;
+      }
+
+      .or-login-with{
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+
+        .line-container{
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: flex;
+          width: 100%;
+          align-items: center;
+
+          .left-line, .right-line{
+            height: 1px;
+            background-color: rgba(0,0,0,0.2);
+            flex-grow: 1;
+          }
+
+          .center-line{
+            margin: 0 5px;
+          }
+        }
+      }
+
+      .social-buttons{
+        a{
+          font-size: 32px;
+          color: #CC6666;
+          margin: 0 5px;
+        }
       }
     }
 

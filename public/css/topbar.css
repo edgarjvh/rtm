@@ -1,28 +1,49 @@
-.user-profile {
+ul.navbar-nav {
+  position: relative;
+}
+ul.navbar-nav .logout-container {
+  position: absolute;
+  bottom: -40px;
+  right: 0;
+  z-index: 5;
+  width: 200%;
+  display: flex;
+  justify-content: flex-end;
+}
+ul.navbar-nav .logout-container a {
+  color: #000000;
+  text-decoration: none;
+  margin-left: 40px;
+  transition: ease 0.2s;
+}
+ul.navbar-nav .logout-container a:hover {
+  color: #CC6666;
+}
+ul.navbar-nav .user-profile {
   position: relative !important;
   display: flex;
   align-items: center;
 }
-.user-profile .user-info {
+ul.navbar-nav .user-profile .user-info {
   font-family: Source Sans Pro, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
-.user-profile .user-info .user-name {
+ul.navbar-nav .user-profile .user-info .user-name {
   color: #CC6666;
   font-weight: bold;
 }
-.user-profile .user-info .user-email {
+ul.navbar-nav .user-profile .user-info .user-email {
   color: #CC6666;
   font-weight: normal;
 }
-.user-profile .user-image {
+ul.navbar-nav .user-profile .user-image {
   width: 80px;
   height: 80px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
-  border-radius: 50% ;
+  border-radius: 50%;
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#a8a8a8+0,000000+100&0.65+0,0+100 */
   background: -moz-linear-gradient(top, rgba(168, 168, 168, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
   /* FF3.6-15 */
@@ -40,12 +61,12 @@
   align-items: center;
   margin-left: 15px;
 }
-.user-profile .user-image img {
+ul.navbar-nav .user-profile .user-image img {
   margin-top: 10px;
 }
-.user-profile .logout-btn {
+ul.navbar-nav .user-profile .change-user-image {
   position: absolute;
-  right: -5px;
+  right: -8px;
   bottom: -5px;
   color: #CC6666;
   text-decoration: none;

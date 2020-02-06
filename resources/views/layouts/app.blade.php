@@ -31,6 +31,7 @@
     @yield('style-login')
     @yield('style-home')
     @yield('style-verify-email')
+    @yield('style-invite-team')
 
     <style>
         #app {
@@ -163,26 +164,38 @@
                                 </div>
 
                                 <div class="user-image">
-                                    <img src="{{asset('img/default-profile.png')}}" alt="">
+                                    @if (Auth::user()->linkedin_avatar)
+                                        <img src="{{Auth::user()->linkedin_avatar}}" alt="">
+                                    @else
+                                        <img src="{{asset('img/default-profile.png')}}" alt="">
+                                    @endif
+
                                 </div>
 
-                                <a class="logout-btn" href="{{route('logout')}}" title="Log Out"
-                                   onclick="
-                                   event.preventDefault();
-                                   document.getElementById('logout-form').submit();"
-                                >
-                                    <span class="fas fa-sign-out-alt"></span>
+                                <a href="#" class="change-user-image" title="Change User Image">
+                                    <span class="fas fa-camera"></span>
                                 </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                      style="display: none;">
-                                    @csrf
-                                </form>
-
                             </li>
+
                         @endif
 
+                        <li class="logout-container">
+                            <a href="/invite-your-team">Invite Team Members</a>
 
+                            <a class="logout-btn" href="{{route('logout')}}" title="Log Out"
+                               onclick="
+                            event.preventDefault();
+                            document.getElementById('logout-form').submit();"
+                            >
+                                Log Out
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                  style="display: none;">
+                                @csrf
+                            </form>
+
+                        </li>
                     @endguest
                 </ul>
             </div>

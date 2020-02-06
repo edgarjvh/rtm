@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Organization;
 use App\Rating;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,44 @@ class MeetingsController extends Controller
             }
             return $next($request);
         });
+    }
+
+    public function calendarAuthorization()
+    {
+        return view('home')->with(['userLogged' => $this->user]);
+    }
+
+    public function showInvitations()
+    {
+        return view('invite-your-team');
+    }
+
+    public function sendInvitations(Request $request)
+    {
+        $sent = 0;
+        $notSent = 0;
+
+        $partners = explode(',', $request->partners);
+
+        if (count($partners) > 0){
+            for ($i = 0; $i < count($partners); $i++) {
+                $partner = $partners[$i];
+
+                if ($this->isEmailValid($partner)) {
+                    $sent++;
+                }else{
+                    $notSent++;
+                }
+            }
+        }
+
+        if ($sent > 0) {
+            User::where('email', Auth::user()->email)->update([
+                'has_invited' => 1
+            ]);
+        }
+
+        return view('invite-your-team')->with(['sent' => $sent, 'notSent' => $notSent]);
     }
 
     public function getMeetings()
@@ -79,9 +118,9 @@ class MeetingsController extends Controller
                 }
             }
 
-            if (count($rates) > 0){
+            if (count($rates) > 0) {
                 $global_avg = array_sum($rates) / count($rates);
-            }else{
+            } else {
                 $global_avg = 0;
             }
 
@@ -99,5 +138,10 @@ class MeetingsController extends Controller
         } else {
             return response()->json(['result' => 'no user']);
         }
+    }
+
+    function isEmailValid($email)
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 }

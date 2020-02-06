@@ -40,8 +40,16 @@ Route::resource('/home', 'EventsController');
 Route::get('/organization-setup', 'OrganizationController@setOrg');
 Route::post('/save-organization', 'OrganizationController@saveOrganization')->name('save-organization');
 
+Route::get('/calendar-authorization', 'MeetingsController@calendarAuthorization');
+
+Route::get('/invite-your-team', 'MeetingsController@showInvitations');
+Route::post('/invite-your-team', 'MeetingsController@sendInvitations')->name('invite-your-team');
+
 Route::post('/saveExclusion', 'ExclusionsController@saveExclusion');
 Route::post('/deleteExclusion', 'ExclusionsController@deleteExclusion');
+
+Route::post('/setSendingRatingEmails', 'SettingsController@setSendingRatingEmails');
+Route::post('/setSharingMeetingScore', 'SettingsController@setSharingMeetingScore');
 
 Route::get('/login/{provider}', 'SocialAuthController@redirectToProvider');
 Route::get('/login/{provider}/callback', 'SocialAuthController@handleProviderCallback');
