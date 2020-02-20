@@ -256,4 +256,14 @@ main.py-4 {
   color: #FFF;
   background-color: #CC6666;
 }
+.main-container .tabs-container .tab-settings .tbl-settings .trow .tbtn {
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: 600;
+  margin-right: 40px;
+  cursor: pointer;
+  transition: ease 0.3s;
+}
+.main-container .tabs-container .tab-settings .tbl-settings .trow .tbtn:hover {
+  color: #000000;
+}
 /*# sourceMappingURL=meetings.css.map */

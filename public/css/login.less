@@ -1,7 +1,29 @@
-main.py-4{
+@media screen and(max-width: 768px) {
+  .login-container {
+    padding: 0 !important;
+
+    .log-options {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center;
+      .opt {
+        padding-bottom: 20px !important;
+        img {
+          max-width: 150px !important;
+          max-height: 150px !important;
+          width: 150px !important;
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+
+main.py-4 {
   background-color: #EDEEF0 !important;
 }
-.login-container{
+
+.login-container {
   width: 100%;
   max-width: 800px;
   height: 100%;
@@ -10,7 +32,7 @@ main.py-4{
   padding: 70px 0;
   margin: 0 auto;
 
-  .title{
+  .title {
     font-family: 'Merriweather', 'serif';
     font-weight: bold;
     font-style: italic;
@@ -20,67 +42,71 @@ main.py-4{
     width: 100%;
   }
 
-  .log-options{
+  .log-options {
     display: flex;
-    justify-content: space-between;
+    //flex-direction: row;
+    justify-content: space-evenly;
+    //flex-wrap: wrap;
 
-    .opt.col{
+    .opt.col {
       flex-direction: column;
       justify-content: flex-start;
     }
 
-    .opt{
+    .opt {
       display: flex;
       flex-grow: 1;
-      max-width: 48%;
+      max-width: 380px;
+      width: 100%;
       flex-basis: 100%;
       align-items: center;
       position: relative;
       padding-bottom: 50px;
       flex-direction: column;
+      //min-width: 365px;
 
-      form{
+      form {
         width: 90%;
 
-        .form-group.submit{
+        .form-group.submit {
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
         }
 
-        input{
+        input {
           background-color: transparent !important;
         }
 
-        input[type=email]{
+        input[type=email] {
           text-transform: lowercase;
         }
 
-        a.btn-link{
+        a.btn-link {
           font-family: "Source Sans Pro", sans-serif;
           color: #CC6666;
           font-style: italic;
         }
       }
 
-      img{
+      img {
         max-width: 270px;
         max-height: 270px;
         width: 270px;
         margin-right: 20px;
       }
 
-      p{
+      p {
         font-family: "Source Sans Pro", sans-serif;
         font-weight: lighter;
         color: #5B5B5F;
         font-size: 16px;
 
-        span.highlighted{
+        span.highlighted {
           color: #CC6666;
         }
       }
 
-      .bottom-line{
+      .bottom-line {
         position: absolute;
         width: 0;
         height: 3px;
@@ -89,12 +115,12 @@ main.py-4{
         transition: width ease 0.3s;
       }
 
-      .or-login-with{
+      .or-login-with {
         position: relative;
         width: 100%;
         margin-bottom: 20px;
 
-        .line-container{
+        .line-container {
           position: absolute;
           top: 0;
           left: 0;
@@ -102,20 +128,20 @@ main.py-4{
           width: 100%;
           align-items: center;
 
-          .left-line, .right-line{
+          .left-line, .right-line {
             height: 1px;
-            background-color: rgba(0,0,0,0.2);
+            background-color: rgba(0, 0, 0, 0.2);
             flex-grow: 1;
           }
 
-          .center-line{
+          .center-line {
             margin: 0 5px;
           }
         }
       }
 
-      .social-buttons{
-        a{
+      .social-buttons {
+        a {
           font-size: 32px;
           color: #CC6666;
           margin: 0 5px;
@@ -123,8 +149,8 @@ main.py-4{
       }
     }
 
-    .opt:hover{
-      .bottom-line{
+    .opt:hover {
+      .bottom-line {
         width: 100%;
       }
     }

@@ -27,7 +27,7 @@
                         <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
                         <script type="IN/Share"
                                 data-url="{{env('APP_URL') . '/score/' . number_format($global_avg, 2)}}"
-                        data-image="{{asset('img/ban.png')}}"></script>
+                                data-image="{{asset('img/ban.png')}}"></script>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,27 @@
                         </div>
 
                         <label for="cbox-set-send-rating-emails">
-                            Send automatic rating emails to all attendees once the meeting is over.
+                            Send automatic rating emails to all attendees of meetings I hosted.
+                        </label>
+
+                        <span class="fas fa-spin fa-spinner loader"></span>
+                    </div>
+
+                    <div class="trow">
+                        <div class="check-container">
+                            @if($settings->sending_rating_emails == 1)
+                                <input type="checkbox" id="cbox-set-send-rating-emails-attended" checked>
+                            @else
+                                <input type="checkbox" id="cbox-set-send-rating-emails-attended">
+                            @endif
+
+                            <label for="cbox-set-send-rating-emails-attended">
+                                <span class="fas fa-check"></span>
+                            </label>
+                        </div>
+
+                        <label for="cbox-set-send-rating-emails-attended">
+                            Send automatic rating emails to all attendees of meetings I attended.
                         </label>
 
                         <span class="fas fa-spin fa-spinner loader"></span>
@@ -214,6 +234,17 @@
                                 Add a blocked user
                             </div>
                         </div>
+                    </div>
+
+                    <div class="trow">
+                        <div class="tbtn transfer-account" title="Transfer my account">
+                            Transfer my account
+                        </div>
+
+                        <div class="tbtn delete-account" title="Delete my account">
+                            Delete my account
+                        </div>
+
                     </div>
                 </div>
             </div>

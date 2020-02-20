@@ -11,6 +11,6 @@ class Setting extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'user_id', 'sendind_rating_emails', 'sharing_meeting_score'
+        'user_id', 'sendind_rating_emails', 'sendind_rating_emails_not_hosted', 'sharing_meeting_score'
     ];
 }

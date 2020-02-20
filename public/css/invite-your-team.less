@@ -1,3 +1,25 @@
+@media screen and(max-width: 768px) {
+  .main-container {
+    padding: 0 !important;
+
+    .inv-options {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center;
+      .opt {
+        padding-bottom: 20px !important;
+        margin: 0 !important;
+        img {
+          max-width: 300px !important;
+          max-height: 300px !important;
+          width: 300px !important;
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+
 main.py-4 {
   background-color: #EDEEF0 !important;
 }
@@ -51,11 +73,27 @@ main.py-4 {
 
   .inv-options {
     display: flex;
+    justify-content: space-evenly;
+
+    .opt.col {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
 
     .opt {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      max-width: 380px;
+      width: 100%;
+      position: relative;
+      padding-bottom: 50px;
+      flex-basis: 100%;
+      align-items: center;
+
+      form{
+        width: 90%;
+      }
 
       input[type=email], textarea {
         background-color: transparent !important;
@@ -65,6 +103,7 @@ main.py-4 {
       textarea {
         min-height: 120px;
         max-height: 200px;
+        width: 100%;
       }
 
       .add-invitation-btn {
@@ -90,7 +129,6 @@ main.py-4 {
           color: #fff !important;
         }
       }
-
     }
 
     .opt:last-child {
@@ -100,7 +138,5 @@ main.py-4 {
     img {
       width: 400px;
     }
-
   }
-
 }

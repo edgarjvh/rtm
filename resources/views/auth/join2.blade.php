@@ -90,13 +90,6 @@
 
                     <input type="hidden" id="owner" name="owner" value="0">
 
-                    @if(isset($_GET['token']))
-                        <input type="hidden" id="tokenteam" name="tokenteam" value="{{$_GET['token']}}">
-                    @else
-                        <input type="hidden" id="tokenteam" name="tokenteam" value="0">
-                    @endif
-
-
                     <div class="form-group submit">
                         <button type="submit" class="nav-link">
                             REGISTER

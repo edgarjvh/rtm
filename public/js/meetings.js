@@ -41,6 +41,35 @@ $(document).ready(function () {
         });
     });
 
+    $(document).on('change', '#cbox-set-send-rating-emails-attended', function (e) {
+        let input = $(this);
+        let checked = input.is(':checked');
+        let trow = input.closest('.trow');
+        let loader = trow.find('.loader');
+
+        loader.show();
+
+        $.ajax({
+            type: 'post',
+            url: '/setSendingRatingEmailsAttended',
+            dataType: 'json',
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'status': checked
+            },
+            success: function (response) {
+                console.log(response);
+
+                if (response.result === 'OK') {
+                    loader.hide();
+                }
+            },
+            error: function (a, b, c) {
+                console.log('Error');
+            }
+        });
+    });
+
     $(document).on('change', '#cbox-set-allow-sharing', function (e) {
         let input = $(this);
         let checked = input.is(':checked');

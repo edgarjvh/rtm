@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Event;
 use App\Exclusion;
 use App\RatingKey;
+use App\Recipient;
+use App\Setting;
 use DateTime;
 use DateTimeZone;
 use Google_Client;
@@ -62,11 +64,11 @@ class gCalendarController extends Controller
 
     public function getByRefreshToken()
     {
-
         $users = User::all();
 
         foreach ($users as $user) {
             if ($user->google_refresh_token != null) {
+                $userSettings = Setting::where('user_id', $user->id)->first();
 
                 try {
                     $client = new Google_Client();
@@ -113,83 +115,170 @@ class gCalendarController extends Controller
                                     // is meeting duration is greater than 20 minutes but less than 1 day
                                     if ((ceil(($dtEnd - $dtStart) / 60) > 20) && (ceil(($dtEnd - $dtStart) / 60) < 1440)) {
 
-                                        // check if user is also organizer
-                                        if (strtolower($user->email) == strtolower($item['organizer']['email'])) {
+                                        if ($item['attendees']) {
+                                            $acceptedCount = 0;
 
-                                            if ($item['attendees']) {
-                                                $acceptedCount = 0;
+                                            foreach ($item['attendees'] as $att) {
+                                                if ($att['responseStatus'] == "accepted") $acceptedCount++;
+                                            }
 
-                                                foreach ($item['attendees'] as $att) {
-                                                    if ($att['responseStatus'] == "accepted") $acceptedCount++;
-                                                }
+                                            // if three or more attendees have accepted
+                                            if ($acceptedCount >= 3) {
+                                                $start_date = new DateTime($item['start']['dateTime']);
+                                                $start_date->setTimezone(new DateTimeZone("UTC"));
+                                                $end_date = new DateTime($item['end']['dateTime']);
+                                                $end_date->setTimezone(new DateTimeZone("UTC"));
 
-                                                // if three or more attendees have accepted
-                                                if ($acceptedCount >= 3) {
+                                                for ($x = 0; $x < count($item['attendees']); $x++) {
+                                                    $attendee = $item['attendees'][$x];
 
-                                                    // check if event has already been emailed
-                                                    $eventExist = Event::where('event_id', $item['id'])->first();
 
-                                                    if (!$eventExist) {
-                                                        $start_date = new DateTime($item['start']['dateTime']);
-                                                        $start_date->setTimezone(new DateTimeZone("UTC"));
-                                                        $end_date = new DateTime($item['end']['dateTime']);
-                                                        $end_date->setTimezone(new DateTimeZone("UTC"));
+                                                    $isExcluded = Exclusion::where([
+                                                        'user_email' => strtolower($user->email),
+                                                        'email' => $attendee['email']
+                                                    ])->first();
 
-                                                        for ($x = 0; $x < count($item['attendees']); $x++) {
-                                                            $attendee = $item['attendees'][$x];
+                                                    if ($isExcluded) {
+                                                        echo 'Google Event Id: ' . $item['id'] . ' Excluded email (' . strtolower($attendee['email']) . ')';
+                                                        echo '<br>';
+                                                    } else {
+                                                        if ($attendee['responseStatus'] == "accepted") {
 
-                                                            $excluded = Exclusion::where([
-                                                                'user_email' => strtolower($user->email),
-                                                                'email' => $attendee['email']
-                                                            ])->first();
+                                                            // IF USER IS THE HOST
+                                                            if (strtolower($user->email) == strtolower($item['organizer']['email'])) {
 
-                                                            if ($excluded) {
-                                                                echo 'Google Event Id: ' . $item['id'] . ' Excluded email (' . $attendee['email'] . ')';
-                                                                echo '<br>';
-                                                            } else {
-                                                                if ($attendee['responseStatus'] == "accepted") {
-                                                                    // if attendee is not the organizer, sent email for rating
+                                                                // IF HAS SENDING RATING EMAILS ENABLED
+                                                                if ($userSettings->sending_rating_emails == 1) {
+                                                                    // if attendee is not the organizer, send email for rating
                                                                     if (strtolower($item['organizer']['email']) != strtolower($attendee['email'])) {
-                                                                        $rating_key = Str::random(100);
 
-                                                                        $key = new RatingKey();
-                                                                        $key->rating_key = $rating_key;
-                                                                        $key->save();
+                                                                        // CHECKING IF EMAIL IS NOT ALREADY SENT
+                                                                        $isAlreadySent = Recipient::where(['event_id' => $item['id'], 'recipient' => $attendee['email']])->first();
 
-                                                                        app()->call('\App\Http\Controllers\MessagesController@sendEmail',
-                                                                            [
-                                                                                $attendee['email'],
-                                                                                $rating_key,
-                                                                                $item['id'],
-                                                                                $item['summary'],
-                                                                                $item['organizer']['email'],
-                                                                                $start_date->format('Y-m-d H:i:s'),
-                                                                                $end_date->format('Y-m-d H:i:s')
-                                                                            ]);
+                                                                        if (!$isAlreadySent) {
+                                                                            $rating_key = Str::random(100);
+
+                                                                            $key = new RatingKey();
+                                                                            $key->rating_key = $rating_key;
+                                                                            $key->save();
+
+                                                                            app()->call('\App\Http\Controllers\MessagesController@sendEmail',
+                                                                                [
+                                                                                    strtolower($attendee['email']),
+                                                                                    $rating_key,
+                                                                                    $item['id'],
+                                                                                    $item['summary'],
+                                                                                    $item['organizer']['email'],
+                                                                                    $start_date->format('Y-m-d H:i:s'),
+                                                                                    $end_date->format('Y-m-d H:i:s')
+                                                                                ]);
+
+                                                                            $recipient = new Recipient();
+                                                                            $recipient->organizer = $item['organizer']['email'];
+                                                                            $recipient->recipient = strtolower($attendee['email']);
+                                                                            $recipient->start_date = $start_date->format('Y-m-d H:i:s');
+                                                                            $recipient->end_date = $end_date->format('Y-m-d H:i:s');
+                                                                            $recipient->attendees = count($item['attendees']);
+                                                                            $recipient->event_id = $item['id'];
+                                                                            $recipient->provider = 'google';
+                                                                            $recipient->title = $item['summary'];
+                                                                            $recipient->description = $item['description'];
+                                                                            $recipient->save();
+
+                                                                        } else {
+                                                                            echo 'Google Event Id: ' . $item['id'] . ' already emailed to ' . strtolower($attendee['email']);
+                                                                            echo '<br>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                // IF HAS SENDING RATING EMAILS NOT HOSTED ENABLED
+                                                                if ($userSettings->sending_rating_emails_not_hosted == 1) {
+                                                                    // CHECKING IF ORGANIZER IS ALREADY REGISTERED WITH US
+                                                                    $isHostRegistered = User::where('email', strtolower($item['organizer']['email']))->first();
+
+                                                                    if (!$isHostRegistered) {
+                                                                        // CHECKING IF EMAIL IS NOT ALREADY SENT
+                                                                        $isAlreadySent = Recipient::where(['event_id' => $item['id'], 'recipient' => $attendee['email']])->first();
+
+                                                                        if (!$isAlreadySent) {
+                                                                            // CHECK IF ORGANIZER OR ANOTHER ATTENDEE
+                                                                            if (strtolower($item['organizer']['email']) == strtolower($attendee['email'])) {
+
+                                                                                $rating_key = Str::random(100);
+
+                                                                                $key = new RatingKey();
+                                                                                $key->rating_key = $rating_key;
+                                                                                $key->save();
+
+                                                                                app()->call('\App\Http\Controllers\MessagesController@sendEmailToHost',
+                                                                                    [
+                                                                                        strtolower($attendee['email']),
+                                                                                        $rating_key,
+                                                                                        $item['id'],
+                                                                                        $item['summary'],
+                                                                                        $item['organizer']['email'],
+                                                                                        $start_date->format('Y-m-d H:i:s'),
+                                                                                        $end_date->format('Y-m-d H:i:s')
+                                                                                    ]);
+
+                                                                                $recipient = new Recipient();
+                                                                                $recipient->organizer = $item['organizer']['email'];
+                                                                                $recipient->recipient = strtolower($attendee['email']);
+                                                                                $recipient->start_date = $start_date->format('Y-m-d H:i:s');
+                                                                                $recipient->end_date = $end_date->format('Y-m-d H:i:s');
+                                                                                $recipient->attendees = count($item['attendees']);
+                                                                                $recipient->event_id = $item['id'];
+                                                                                $recipient->provider = 'google';
+                                                                                $recipient->title = $item['summary'];
+                                                                                $recipient->description = $item['description'];
+                                                                                $recipient->save();
+
+                                                                            } else {
+
+                                                                                $rating_key = Str::random(100);
+
+                                                                                $key = new RatingKey();
+                                                                                $key->rating_key = $rating_key;
+                                                                                $key->save();
+
+                                                                                app()->call('\App\Http\Controllers\MessagesController@sendEmailToAttendee',
+                                                                                    [
+                                                                                        strtolower($attendee['email']),
+                                                                                        $rating_key,
+                                                                                        $item['id'],
+                                                                                        $item['summary'],
+                                                                                        $item['organizer']['email'],
+                                                                                        $start_date->format('Y-m-d H:i:s'),
+                                                                                        $end_date->format('Y-m-d H:i:s')
+                                                                                    ]);
+
+                                                                                $recipient = new Recipient();
+                                                                                $recipient->organizer = $item['organizer']['email'];
+                                                                                $recipient->recipient = strtolower($attendee['email']);
+                                                                                $recipient->start_date = $start_date->format('Y-m-d H:i:s');
+                                                                                $recipient->end_date = $end_date->format('Y-m-d H:i:s');
+                                                                                $recipient->attendees = count($item['attendees']);
+                                                                                $recipient->event_id = $item['id'];
+                                                                                $recipient->provider = 'google';
+                                                                                $recipient->title = $item['summary'];
+                                                                                $recipient->description = $item['description'];
+                                                                                $recipient->save();
+
+                                                                            }
+                                                                        } else {
+                                                                            echo 'Google Event Id: ' . $item['id'] . ' already emailed to ' . strtolower($attendee['email']);
+                                                                            echo '<br>';
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
-
-                                                        $event = new Event();
-                                                        $event->organizer = $item['organizer']['email'];
-                                                        $event->start_date = $start_date->format('Y-m-d H:i:s');
-                                                        $event->end_date = $end_date->format('Y-m-d H:i:s');
-                                                        $event->attendees = count($item['attendees']);
-                                                        $event->event_id = $item['id'];
-                                                        $event->provider = 'google';
-                                                        $event->title = $item['summary'];
-                                                        $event->description = $item['description'];
-                                                        $event->save();
-                                                    } else {
-                                                        echo 'Google Event Id: ' . $item['id'] . ' already emailed';
-                                                        echo '<br>';
                                                     }
-
-                                                } else {
-                                                    echo 'Google Event Id: ' . $item['id'] . ' - ' . $acceptedCount . ' attendees accepted';
-                                                    echo '<br>';
                                                 }
+                                            } else {
+                                                echo 'Google Event Id: ' . $item['id'] . ' - ' . $acceptedCount . ' attendees accepted';
+                                                echo '<br>';
                                             }
                                         }
                                     }
@@ -197,16 +286,17 @@ class gCalendarController extends Controller
                             }
                         }
                     }
-                } catch (ClientException $e) {
-                    User::where('email', $user->email)->update(array(
-                        'google_account' => null,
-                        'google_access_token' => null,
-                        'google_refresh_token' => null,
-                        'google_expiry_token' => null,
-                        'google_avatar' => null,
-                        'google_id' => null
-                    ));
+                } catch (\Google_Exception $e) {
+//                    User::where('email', $user->email)->update(array(
+//                        'google_account' => null,
+//                        'google_access_token' => null,
+//                        'google_refresh_token' => null,
+//                        'google_expiry_token' => null,
+//                        'google_avatar' => null,
+//                        'google_id' => null
+//                    ));
                 }
+
             }
         }
     }

@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\InvitationToken;
+use App\Mail\JoinTeam;
 use App\Organization;
 use App\Rating;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 
 class MeetingsController extends Controller
 {
@@ -54,7 +58,23 @@ class MeetingsController extends Controller
                 $partner = $partners[$i];
 
                 if ($this->isEmailValid($partner)) {
-                    $sent++;
+
+                    $isRegistered = User::where('email', $partner)->first();
+
+                    if ($isRegistered){
+                        $notSent++;
+                    }else{
+                        $token = Str::random(100);
+
+                        $invitation_token =new InvitationToken();
+                        $invitation_token->user_id = $this->user->id;
+                        $invitation_token->partner = $partner;
+                        $invitation_token->token = $token;
+                        $invitation_token->save();
+
+                        Mail::to($partner)->send(new JoinTeam($this->user->name, $token));
+                        $sent++;
+                    }
                 }else{
                     $notSent++;
                 }

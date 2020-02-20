@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\InvitationToken;
 use App\Mail\VerifyToken;
 use App\Organization;
 use App\User;
@@ -64,10 +65,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $org_id = 0;
+
+        if ($data['tokenteam'] != '0'){
+            $invitationToken = InvitationToken::where('token', $data['tokenteam'])->first();
+
+            if ($invitationToken){
+                $_user = User::where('id', $invitationToken->user_id)->first();
+                if ($_user){
+                    $org_id = $_user->organization_id;
+                }
+            }
+        }
+
         $user = User::create([
             'name' => $data['name'],
             'email' => strtolower($data['email']),
-            'organization_id' => 0,
+            'organization_id' => $org_id,
             'organization_owner' => $data['owner'],
             'password' => Hash::make($data['password']),
             'verify_token' => Str::random(40),

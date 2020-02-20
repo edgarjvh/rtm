@@ -45,6 +45,12 @@
                             SEND INVITATIONS
                         </button>
                     </div>
+
+                    <div class="form-group submit">
+                        <a href="/home" class="nav-link">
+                            GO HOME
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

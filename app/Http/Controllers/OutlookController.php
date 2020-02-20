@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Event;
 use App\Exclusion;
 use App\RatingKey;
+use App\Recipient;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Support\Facades\Date;
@@ -140,6 +141,9 @@ class OutlookController extends Controller
             foreach ($users as $ouser) {
                 $now = time() + 300;
                 $otoken = $ouser->outlook_access_token;
+
+                $userSettings = Setting::where('user_id', $ouser->id)->first();
+
                 try {
                     $oauthClient = new GenericProvider([
                         'clientId' => env('OAUTH_APP_ID'),
@@ -177,7 +181,7 @@ class OutlookController extends Controller
                         "\$select" => "subject,start,end,attendees,isAllDay, IsCancelled, IsOrganizer, organizer, bodyPreview, CreatedDateTime, ResponseStatus",
                         "\$orderby" => "Start/DateTime",
                         "\$top" => 1000,
-                        "\$filter" => "Start/DateTime ge '". date('c', strtotime('-1 days')) ."' and End/DateTime le '". date('c') ."'"
+                        "\$filter" => "Start/DateTime ge '" . date('c', strtotime('-1 days')) . "' and End/DateTime le '" . date('c') . "'"
                     );
 
                     $getEventsUrl = '/me/events?' . http_build_query($eventsQueryParams);
@@ -188,9 +192,9 @@ class OutlookController extends Controller
                     $now = time();
 
                     foreach ($events as $event) {
-                        if ($event->getIsOrganizer() && !$event->getIsAllDay() && !$event->getIsCancelled()) {
+                        if (!$event->getIsAllDay() && !$event->getIsCancelled()) {
 
-                            $organizer = $event->getOrganizer()->getEmailAddress()->getAddress();
+                            $organizer = strtolower($event->getOrganizer()->getEmailAddress()->getAddress());
                             $dtStart = date('U', strtotime($event->getStart()->getDateTime()));
                             $dtEnd = date('U', strtotime($event->getEnd()->getDateTime()));
 
@@ -202,61 +206,146 @@ class OutlookController extends Controller
 
                                     if (count($event->getAttendees()) >= 3) {
 
-                                        $eventExist = Event::where('event_id', $event->getId())->first();
+                                        $start_date = new DateTime($event->getStart()->getDateTime());
+                                        $start_date->setTimezone(new DateTimeZone("UTC"));
+                                        $end_date = new DateTime($event->getEnd()->getDateTime());
+                                        $end_date->setTimezone(new DateTimeZone("UTC"));
 
-                                        // if event is not in database, will be saved
-                                        if (!$eventExist) {
-                                            $start_date = new DateTime($event->getStart()->getDateTime());
-                                            $start_date->setTimezone(new DateTimeZone("UTC"));
-                                            $end_date = new DateTime( $event->getEnd()->getDateTime());
-                                            $end_date->setTimezone(new DateTimeZone("UTC"));
+                                        foreach ($event->getAttendees() as $attendee) {
+                                            $excluded = Exclusion::where([
+                                                'user_email' => $organizer,
+                                                'email' => $attendee['emailAddress']['address']
+                                            ])->first();
 
-                                            foreach ($event->getAttendees() as $attendee) {
-                                                if ($attendee['emailAddress']['address'] !== $organizer) {
+                                            if ($excluded) {
+                                                echo 'Outlook Event Id: ' . $event->getId() . ' Excluded email (' . strtolower($attendee['emailAddress']['address']) . ')';
+                                                echo '<br>';
+                                            } else {
+                                                // CHECK IF USER IS THE HOST
 
-                                                    $excluded = Exclusion::where([
-                                                        'user_email' => $organizer,
-                                                        'email' => $attendee['emailAddress']['address']
-                                                    ])->first();
+                                                if ($event->getIsOrganizer()){
+                                                    // IF HAS SENDING RATING EMAILS ENABLED
+                                                    if ($userSettings->sending_rating_emails == 1) {
+                                                        // if attendee is not the organizer, send email for rating
+                                                        if ($organizer != strtolower($attendee['emailAddress']['address'])){
+                                                            // CHECKING IF EMAIL IS NOT ALREADY SENT
+                                                            $isAlreadySent = Recipient::where(['event_id' => $event->getId(), 'recipient' => strtolower($attendee['emailAddress']['address'])])->first();
 
-                                                    if ($excluded){
-                                                        echo 'Outlook Event Id: ' . $event->getId() . ' Excluded email (' . $attendee['emailAddress']['address'] . ')';
-                                                        echo '<br>';
-                                                    }else{
-                                                        $rating_key = Str::random(100);
+                                                            if (!$isAlreadySent) {
+                                                                $rating_key = Str::random(100);
 
-                                                        $key = new RatingKey();
-                                                        $key->rating_key = $rating_key;
-                                                        $key->save();
+                                                                $key = new RatingKey();
+                                                                $key->rating_key = $rating_key;
+                                                                $key->save();
 
-                                                        app()->call('\App\Http\Controllers\MessagesController@sendEmail',
-                                                            [
-                                                                $attendee['emailAddress']['address'],
-                                                                $rating_key,
-                                                                $event->getId(),
-                                                                $event->getSubject(),
-                                                                $organizer,
-                                                                $start_date->format('Y-m-d H:i:s'),
-                                                                $end_date->format('Y-m-d H:i:s')
-                                                            ]);
+                                                                app()->call('\App\Http\Controllers\MessagesController@sendEmail',
+                                                                    [
+                                                                        $attendee['emailAddress']['address'],
+                                                                        $rating_key,
+                                                                        $event->getId(),
+                                                                        $event->getSubject(),
+                                                                        $organizer,
+                                                                        $start_date->format('Y-m-d H:i:s'),
+                                                                        $end_date->format('Y-m-d H:i:s')
+                                                                    ]);
+
+                                                                $recipient = new Recipient();
+                                                                $recipient->organizer = $organizer;
+                                                                $recipient->recipient = strtolower($attendee['emailAddress']['address']);
+                                                                $recipient->start_date = $start_date->format('Y-m-d H:i:s');
+                                                                $recipient->end_date = $end_date->format('Y-m-d H:i:s');
+                                                                $recipient->attendees = count($event->getAttendees());
+                                                                $recipient->event_id = $event->getId();
+                                                                $recipient->provider = 'outlook';
+                                                                $recipient->title = $event->getSubject();
+                                                                $recipient->description = $event->getBodyPreview();
+                                                                $recipient->save();
+
+                                                            }else{
+                                                                echo 'Google Event Id: ' . $event->getId() . ' already emailed to ' . strtolower($attendee['emailAddress']['address']);
+                                                                echo '<br>';
+                                                            }
+                                                        }
+                                                    }
+                                                }else{
+                                                    // IF HAS SENDING RATING EMAILS NOT HOSTED ENABLED
+                                                    if ($userSettings->sending_rating_emails_not_hosted == 1) {
+                                                        // CHECKING IF ORGANIZER IS ALREADY REGISTERED WITH US
+                                                        $isHostRegistered = User::where('email', $organizer)->first();
+
+                                                        if (!$isHostRegistered) {
+                                                            // CHECKING IF EMAIL IS NOT ALREADY SENT
+                                                            $isAlreadySent = Recipient::where(['event_id' => $event->getId(), 'recipient' => strtolower($attendee['emailAddress']['address'])])->first();
+
+                                                            if (!$isAlreadySent) {
+                                                                // CHECK IF ORGANIZER OR ANOTHER ATTENDEE
+                                                                if ($organizer == strtolower($attendee['emailAddress']['address'])) {
+                                                                    $rating_key = Str::random(100);
+
+                                                                    $key = new RatingKey();
+                                                                    $key->rating_key = $rating_key;
+                                                                    $key->save();
+
+                                                                    app()->call('\App\Http\Controllers\MessagesController@sendEmailToHost',
+                                                                        [
+                                                                            $attendee['emailAddress']['address'],
+                                                                            $rating_key,
+                                                                            $event->getId(),
+                                                                            $event->getSubject(),
+                                                                            $organizer,
+                                                                            $start_date->format('Y-m-d H:i:s'),
+                                                                            $end_date->format('Y-m-d H:i:s')
+                                                                        ]);
+
+                                                                    $recipient = new Recipient();
+                                                                    $recipient->organizer = $organizer;
+                                                                    $recipient->recipient = strtolower($attendee['emailAddress']['address']);
+                                                                    $recipient->start_date = $start_date->format('Y-m-d H:i:s');
+                                                                    $recipient->end_date = $end_date->format('Y-m-d H:i:s');
+                                                                    $recipient->attendees = count($event->getAttendees());
+                                                                    $recipient->event_id = $event->getId();
+                                                                    $recipient->provider = 'outlook';
+                                                                    $recipient->title = $event->getSubject();
+                                                                    $recipient->description = $event->getBodyPreview();
+                                                                    $recipient->save();
+                                                                }else{
+                                                                    $rating_key = Str::random(100);
+
+                                                                    $key = new RatingKey();
+                                                                    $key->rating_key = $rating_key;
+                                                                    $key->save();
+
+                                                                    app()->call('\App\Http\Controllers\MessagesController@sendEmailToAttendee',
+                                                                        [
+                                                                            $attendee['emailAddress']['address'],
+                                                                            $rating_key,
+                                                                            $event->getId(),
+                                                                            $event->getSubject(),
+                                                                            $organizer,
+                                                                            $start_date->format('Y-m-d H:i:s'),
+                                                                            $end_date->format('Y-m-d H:i:s')
+                                                                        ]);
+
+                                                                    $recipient = new Recipient();
+                                                                    $recipient->organizer = $organizer;
+                                                                    $recipient->recipient = strtolower($attendee['emailAddress']['address']);
+                                                                    $recipient->start_date = $start_date->format('Y-m-d H:i:s');
+                                                                    $recipient->end_date = $end_date->format('Y-m-d H:i:s');
+                                                                    $recipient->attendees = count($event->getAttendees());
+                                                                    $recipient->event_id = $event->getId();
+                                                                    $recipient->provider = 'outlook';
+                                                                    $recipient->title = $event->getSubject();
+                                                                    $recipient->description = $event->getBodyPreview();
+                                                                    $recipient->save();
+                                                                }
+                                                            }else {
+                                                                echo 'Google Event Id: ' . $event->getId() . ' already emailed to ' . strtolower($attendee['emailAddress']['address']);
+                                                                echo '<br>';
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-
-
-                                            $newEvent = new Event();
-                                            $newEvent->organizer = $organizer;
-                                            $newEvent->start_date = $start_date->format('Y-m-d H:i:s');
-                                            $newEvent->end_date = $end_date->format('Y-m-d H:i:s');
-                                            $newEvent->attendees = count($event->getAttendees());
-                                            $newEvent->event_id = $event->getId();
-                                            $newEvent->provider = 'outlook';
-                                            $newEvent->title = $event->getSubject();
-                                            $newEvent->description = $event->getBodyPreview();
-                                            $newEvent->save();
-                                        }else{
-                                            echo 'Outlook Event Id: ' . $event->getId() . ' already emailed';
-                                            echo '<br>';
                                         }
                                     }
                                 }
@@ -264,14 +353,14 @@ class OutlookController extends Controller
                         }
                     }
                 } catch (IdentityProviderException $e) {
-                    User::where('email', $ouser->email)->update(array(
-                        'outlook_account' => null,
-                        'outlook_access_token' => null,
-                        'outlook_refresh_token' => null,
-                        'outlook_expiry_token' => null,
-                        'outlook_avatar' => null,
-                        'outlook_id' => null
-                    ));
+//                    User::where('email', $ouser->email)->update(array(
+//                        'outlook_account' => null,
+//                        'outlook_access_token' => null,
+//                        'outlook_refresh_token' => null,
+//                        'outlook_expiry_token' => null,
+//                        'outlook_avatar' => null,
+//                        'outlook_id' => null
+//                    ));
                 }
             }
         }

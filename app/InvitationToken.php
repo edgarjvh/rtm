@@ -4,16 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @method static where(array $array)
- */
-class Exclusion extends Model
+class InvitationToken extends Model
 {
-    protected $table = 'exclusions';
+    protected $table = 'invitation_tokens';
     public $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = [
-        'user_email', 'email'
+        'token', 'user_id', 'partner'
     ];
 }

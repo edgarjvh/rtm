@@ -49,6 +49,7 @@ Route::post('/saveExclusion', 'ExclusionsController@saveExclusion');
 Route::post('/deleteExclusion', 'ExclusionsController@deleteExclusion');
 
 Route::post('/setSendingRatingEmails', 'SettingsController@setSendingRatingEmails');
+Route::post('/setSendingRatingEmailsAttended', 'SettingsController@setSendingRatingEmailsAttended');
 Route::post('/setSharingMeetingScore', 'SettingsController@setSharingMeetingScore');
 
 Route::get('/login/{provider}', 'SocialAuthController@redirectToProvider');
@@ -77,6 +78,10 @@ Route::get('/rate', function (){
 
 Route::get('/rate1', function (){
     return view('emails.rate-event1')->with(['rating_key' => 'this-is-a-rating-key', 'event_id' => '554']);
+});
+
+Route::get('/jteam', function (){
+    return view('emails.join-team')->with(['team_leader_name' => 'Edgar Hernandez', 'token' => 'blablabla']);
 });
 
 Route::get('/ver', function (){

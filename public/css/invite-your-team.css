@@ -1,3 +1,23 @@
+@media screen and (max-width: 768px) {
+  .main-container {
+    padding: 0 !important;
+  }
+  .main-container .inv-options {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center;
+  }
+  .main-container .inv-options .opt {
+    padding-bottom: 20px !important;
+    margin: 0 !important;
+  }
+  .main-container .inv-options .opt img {
+    max-width: 300px !important;
+    max-height: 300px !important;
+    width: 300px !important;
+    margin-right: 0;
+  }
+}
 main.py-4 {
   background-color: #EDEEF0 !important;
 }
@@ -44,11 +64,25 @@ main.py-4 {
 }
 .main-container .inv-options {
   display: flex;
+  justify-content: space-evenly;
+}
+.main-container .inv-options .opt.col {
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .main-container .inv-options .opt {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  max-width: 380px;
+  width: 100%;
+  position: relative;
+  padding-bottom: 50px;
+  flex-basis: 100%;
+  align-items: center;
+}
+.main-container .inv-options .opt form {
+  width: 90%;
 }
 .main-container .inv-options .opt input[type=email],
 .main-container .inv-options .opt textarea {
@@ -58,6 +92,7 @@ main.py-4 {
 .main-container .inv-options .opt textarea {
   min-height: 120px;
   max-height: 200px;
+  width: 100%;
 }
 .main-container .inv-options .opt .add-invitation-btn {
   font-family: "Source Sans", sans-serif;
