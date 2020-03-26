@@ -35,7 +35,7 @@ Route::resource('cal', 'gCalendarController');
 Route::get('googleAuth', 'gCalendarController@googleAuth');
 Route::get('ref', 'gCalendarController@getByRefreshToken');
 
-Route::resource('/home', 'EventsController');
+Route::resource('/home', 'EventsController')->name('index', 'home');
 
 Route::get('/organization-setup', 'OrganizationController@setOrg');
 Route::post('/save-organization', 'OrganizationController@saveOrganization')->name('save-organization');
@@ -58,11 +58,20 @@ Route::get('/login/{provider}/callback', 'SocialAuthController@handleProviderCal
 Route::get('/getMeetings', 'MeetingsController@getMeetings');
 Route::get('/score/{score}', 'ScoreController@getScore');
 
+Route::get('/ratetheirmeeting', 'RateTheirMeetingController@index')->name('ratetheirmeeting');
+Route::post('/ratetheirmeeting', 'RateTheirMeetingController@send')->name('ratetheirmeeting');
+
 Route::get('/rating/{rating_key}/{event_id}/{rate}', 'RatingsController@handleRating')->name('rating');
 
 Route::get('/outlook', 'OutlookController@login');
 Route::get('/outlookauth', 'OutlookController@outlookauth');
 Route::get('/ocal', 'OutlookController@outlookCalendar')->name('calendar');
+
+Route::get('/htmltopng', function (){
+   return view ('htmltopng');
+});
+
+Route::get('/shareonlinkedin', 'SharingController@shareOnLinkedIn')->name('shareonlinkedin');
 
 Route::get('/policy', function (){
     return view('privacy_policies');

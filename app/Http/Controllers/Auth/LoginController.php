@@ -34,6 +34,12 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $this->middleware('guest')->except('logout');
+
+        session_destroy();
     }
 }

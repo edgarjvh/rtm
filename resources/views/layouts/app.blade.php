@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+?>
+
+        <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -12,6 +18,7 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/topbar.js') }}" defer></script>
 
     <script src="{{asset('js/moment.js')}}"></script>
     <script src="{{asset('js/moment-timezone.js')}}"></script>
@@ -32,12 +39,14 @@
     @yield('style-home')
     @yield('style-verify-email')
     @yield('style-invite-team')
+    @yield('style-rate-their-meeting')
 
     <style>
         #app {
             display: flex;
             flex-direction: column;
             height: 100vh;
+
         }
 
         .nav-link {
@@ -76,131 +85,168 @@
             flex-direction: column;
             flex-grow: 1;
             position: relative;
+
         }
     </style>
 </head>
 <body>
+
+<div class="sidemenu-modal"></div>
+
+<label class="topbar-toggle-btn" for="cbox-toggle-menu">
+    <span class="fas fa-bars"></span>
+</label>
+
+<input type="checkbox" id="cbox-toggle-menu">
+
+<div class="sidebar-container">
+
+    <div class="sidemenu">
+        @guest
+            <div class="sidebar-item">
+                <a class="sidebar-link" href="{{ route('login') }}">Login</a>
+            </div>
+            @if (Route::has('register'))
+                <div class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('register') }}">Register</a>
+                </div>
+            @endif
+        @else
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-name">{{ Auth::user()->name }}</div>
+                    <div class="user-email">{{ Auth::user()->email }}</div>
+
+                    @if(isset($organization) && $organization !== '')
+                        <div class="user-organization">{{$organization}}</div>
+                    @endif
+
+                </div>
+
+                <div class="user-image">
+                    @if (Auth::user()->linkedin_avatar)
+                        <img src="{{Auth::user()->linkedin_avatar}}" alt="">
+                    @else
+                        <img src="{{asset('img/default-profile.png')}}" alt="">
+                    @endif
+
+                </div>
+
+                <a href="#" class="change-user-image" title="Change User Image">
+                    <span class="fas fa-camera"></span>
+                </a>
+            </div>
+
+            <div class="sidebar-item">
+                <a class="sidebar-link" href="/invite-your-team">Invite Team Members</a>
+            </div>
+
+            <div class="sidebar-item">
+                <a class="sidebar-link logout-btn" href="{{route('logout')}}" title="Log Out"
+                   onclick="
+                            event.preventDefault();
+                            document.getElementById('logout-form').submit();"
+                >
+                    Log Out
+                </a>
+            </div>
+        @endguest
+    </div>
+</div>
+
 <div id="app">
-    <nav class="navbar navbar-expand-md navbar-light bg-white mt-2 mb-2">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
+
+    <div class="topbar">
+        <div class="top-container">
+            <a href="{{ url('/') }}" class="brand-reg">
                 @if(Request::path() !== '/')
-                    <img src="{{Request::root() . '/img/logo.png'}}" alt="" style="width: 150px;">
+                    <img src="{{Request::root() . '/img/logo.png'}}" alt="" style="width: 200px;">
                 @endif
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="{{ __('Toggle navigation') }}">
-                <span class="navbar-toggler-icon"></span>
-            </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav mr-auto">
+            <a href="{{ url('/') }}" class="brand-res">
+                @if(Request::path() !== '/')
+                    <img src="{{Request::root() . '/img/iconx100.png'}}" alt="" style="width: 30px;">
+                @endif
+            </a>
 
-                </ul>
 
-                <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ml-auto">
-                    <!-- Authentication Links -->
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">LOGIN</a>
-                        </li>
-                        @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">REGISTER</a>
-                            </li>
-                        @endif
+            <div class="topbar-collapse-menu">
+                @guest
+                    <div class="topbar-item">
+                        <a class="nav-link" href="{{ route('login') }}">LOGIN</a>
+                    </div>
+                    @if (Route::has('register'))
+                        <div class="topbar-item">
+                            <a class="nav-link" href="{{ route('register') }}">REGISTER</a>
+                        </div>
+                    @endif
+                @else
+                    @if(Request::path() === '/')
+                        <div class="topbar-item">
+                            <a class="topbar-link" href="/home" role="button">
+                                Home
+                            </a>
+                        </div>
                     @else
-                        @if(Request::path() === '/')
-                            <li class="nav-item">
-                                <a class="nav-link" href="/home" role="button">
-                                    Home
-                                </a>
-                            </li>
-                        @else
-                            {{--<li class="nav-item">--}}
-                            {{--<a class="nav-link" href="/events" role="button">--}}
-                            {{--My Meetings--}}
-                            {{--</a>--}}
-                            {{--</li>--}}
-                            {{--<li class="nav-item dropdown">--}}
-                            {{--<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"--}}
-                            {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>--}}
 
-                            {{--@if(!isset($organization) || $organization === '')--}}
-                            {{--{{ Auth::user()->name }}--}}
-                            {{--@else--}}
-                            {{--{{ Auth::user()->name . ' (' . $organization . ')' }}--}}
-                            {{--@endif--}}
+                        <div class="topbar-item user-profile">
+                            <div class="user-info">
+                                <div class="user-name">{{ Auth::user()->name }}</div>
+                                <div class="user-email">{{ Auth::user()->email }}</div>
 
-                            {{--<span class="caret"></span>--}}
-                            {{--</a>--}}
+                                @if(isset($organization) && $organization !== '')
+                                    <div class="user-organization">{{$organization}}</div>
+                                @endif
 
-                            {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
-                            {{--<a class="dropdown-item" href="{{ route('logout') }}"--}}
-                            {{--onclick="event.preventDefault();--}}
-                            {{--document.getElementById('logout-form').submit();">--}}
-                            {{--{{ __('Logout') }}--}}
-                            {{--</a>--}}
+                            </div>
 
-                            {{--<form id="logout-form" action="{{ route('logout') }}" method="POST"--}}
-                            {{--style="display: none;">--}}
-                            {{--@csrf--}}
-                            {{--</form>--}}
-                            {{--</div>--}}
-                            {{--</li>--}}
-
-                            <li class="nav-item user-profile">
-                                <div class="user-info">
-                                    <div class="user-name">{{ Auth::user()->name }}</div>
-                                    <div class="user-email">{{ Auth::user()->email }}</div>
-
-                                    @if(isset($organization) && $organization !== '')
-                                        <div class="user-organization">{{$organization}}</div>
+                            <div class="user-image">
+                                @if(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'google')
+                                    @if (Auth::user()->google_avatar)
+                                        <img src="{{Auth::user()->google_avatar}}" alt="">
+                                    @else
+                                        <img src="{{asset('img/default-profile.png')}}" alt="">
                                     @endif
-
-                                </div>
-
-                                <div class="user-image">
+                                @elseif(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'linkedin')
                                     @if (Auth::user()->linkedin_avatar)
                                         <img src="{{Auth::user()->linkedin_avatar}}" alt="">
                                     @else
                                         <img src="{{asset('img/default-profile.png')}}" alt="">
                                     @endif
+                                @else
+                                    <img src="{{asset('img/default-profile.png')}}" alt="">
+                                @endif
+                            </div>
 
-                                </div>
+                            <a href="#" class="change-user-image" title="Change User Image">
+                                <span class="fas fa-camera"></span>
+                            </a>
+                        </div>
 
-                                <a href="#" class="change-user-image" title="Change User Image">
-                                    <span class="fas fa-camera"></span>
-                                </a>
-                            </li>
+                    @endif
 
-                        @endif
+                    <div class="logout-container">
+                        <a href="/invite-your-team">Invite Team Members</a>
 
-                        <li class="logout-container">
-                            <a href="/invite-your-team">Invite Team Members</a>
-
-                            <a class="logout-btn" href="{{route('logout')}}" title="Log Out"
-                               onclick="
+                        <a class="logout-btn" href="{{route('logout')}}" title="Log Out"
+                           onclick="
                             event.preventDefault();
                             document.getElementById('logout-form').submit();"
-                            >
-                                Log Out
-                            </a>
+                        >
+                            Log Out
+                        </a>
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                  style="display: none;">
-                                @csrf
-                            </form>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                              style="display: none;">
+                            @csrf
+                        </form>
 
-                        </li>
-                    @endguest
-                </ul>
+                    </div>
+                @endguest
             </div>
         </div>
-    </nav>
+    </div>
 
     <main class="py-4">
         @yield('content')

@@ -1,3 +1,58 @@
+@media screen and (max-width: 768px){
+  .main-container {
+    width: 100% !important;
+    .meeting-score {
+      padding: 5px 20px;
+    }
+    .tabs {
+
+    }
+    .tabs-container {
+      padding: 0 !important;
+      width: 100% !important;
+      .tab-my-meetings {
+        .table-responsive{
+          display: none !important;
+        }
+        .table-mobile{
+          width: 100%;
+          display: flex !important;
+          flex-direction: column;
+          background-color: #fff;
+          padding: 20px 0;
+
+          .trow:first-child{
+            border-top: 1px solid rgba(0,0,0,0.2);
+          }
+
+          .trow{
+            width: 100%;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            padding: 10px;
+            display: flex;
+
+            .tcol{
+              display: flex;
+              flex-direction: column;
+              width: 50%;
+              font-size: 11px;
+              padding: 5px;
+
+              .tcol-title{
+                font-weight: 700;
+              }
+            }
+          }
+        }
+      }
+
+      .tab-settings{
+        padding-top: 20px !important;
+      }
+    }
+  }
+}
+
 main.py-4 {
   //background-color: #EDEEF0 !important;
   position: relative;
@@ -33,20 +88,44 @@ main.py-4 {
     }
 
     .score {
-      font-size: 108px;
-      line-height: 100px;
-      height: 100%;
+
+      //line-height: 100px;
+      //height: 100%;
       display: flex;
 
+      .score-value{
+        font-size: 108px;
+        margin-top: -30px !important;
+      }
+
       .sharing {
-        height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
-        padding-bottom: 20px;
+        justify-content: center;
+        //padding-bottom: 20px;
 
-        .linkedin span {
+        .linkedin {
+          font-size: 16px;
+          padding: 5px 10px;
+          background-color: #006097;
+          color: #fff;
           line-height: unset !important;
+          border-radius: 2px;
+          text-decoration: none;
+          margin-top: 10px;
+
+          a{
+            color: #fff;
+            font-weight: 600;
+          }
+
+          span{
+            background-color: #fff;
+            color: #006097;
+            padding: 1px 3px;
+            border-radius: 2px;
+          }
+
         }
       }
     }
@@ -87,7 +166,11 @@ main.py-4 {
     }
 
     .tab-my-meetings {
-      table {
+      .table-mobile{
+        display: none;
+      }
+      .table-responsive {
+        display: block;
         border: 0;
         th {
           border: 0;

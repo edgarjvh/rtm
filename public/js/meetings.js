@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+    
+
+
     $(document).on('click', '.tabs .tab', function (e) {
         let btn = $(this);
         let tabs = btn.closest('.tabs');

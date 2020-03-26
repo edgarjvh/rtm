@@ -118,6 +118,10 @@ class EventsController extends Controller
         $timezone = 'America/Caracas';
 //        $timezone = $this->get_local_time();
 
+        if (isset($shared)){
+            dd($shared);
+        }
+
         return view('events.index')->with([
             'newEvents' => $events,
             'organization' => $organization,

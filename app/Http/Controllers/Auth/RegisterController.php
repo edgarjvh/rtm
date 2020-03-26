@@ -37,7 +37,7 @@ class RegisterController extends Controller
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        $_SESSION['register_type'] = 'owner';
+//        $_SESSION['register_type'] = 'owner';
         $this->middleware('guest');
     }
 
@@ -65,6 +65,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+//        dd($data);
+
         $org_id = 0;
 
         if ($data['tokenteam'] != '0'){
@@ -78,47 +80,64 @@ class RegisterController extends Controller
             }
         }
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => strtolower($data['email']),
-            'organization_id' => $org_id,
-            'organization_owner' => $data['owner'],
-            'password' => Hash::make($data['password']),
-            'verify_token' => Str::random(40),
-        ]);
-        $curUser = User::findOrFail($user->id);
-        $this->sendEmail($curUser);
-        return $user;
+        if (isset($_SESSION['registration_type'])){
+            if ($_SESSION['registration_type'] == 'email'){
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => strtolower($data['email']),
+                    'organization_id' => $org_id,
+                    'organization_owner' => $data['owner'],
+                    'password' => Hash::make($data['password']),
+                    'verify_token' => Str::random(40),
+                ]);
 
-//        $org = Organization::where('name', $data['organization'])->first();
-//
-//        if($org){
-//            $user = User::create([
-//                'name' => $data['name'],
-//                'email' => strtolower($data['email']),
-//                'organization_id' => $org->id,
-//                'organization_owner' => 0,
-//                'password' => Hash::make($data['password']),
-//                'verify_token' => Str::random(40),
-//            ]);
-//            $curUser = User::findOrFail($user->id);
-//            $this->sendEmail($curUser);
-//            return $user;
-//        }else{
-//            $org = Organization::create(['name' => $data['organization']]);
-//
-//            $user = User::create([
-//                'name' => $data['name'],
-//                'email' => strtolower($data['email']),
-//                'organization_id' => $org->id,
-//                'organization_owner' => 1,
-//                'password' => Hash::make($data['password']),
-//                'verify_token' => Str::random(40),
-//            ]);
-//            $curUser = User::findOrFail($user->id);
-//            $this->sendEmail($curUser);
-//            return $user;
-//        }
+                $curUser = User::findOrFail($user->id);
+                $this->sendEmail($curUser);
+                return $user;
+            }else{
+
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => strtolower($data['email']),
+                    'organization_id' => $org_id,
+                    'organization_owner' => $data['owner'],
+                    'password' => Hash::make($data['password']),
+                    'verify_token' => Str::random(40),
+                    'email_verified_at' => now(),
+
+                    'google_access_token' => $_SESSION['google_access_token'],
+                    'google_refresh_token' => $_SESSION['google_refresh_token'],
+                    'google_account' => $_SESSION['google_account'],
+                    'google_id' => $_SESSION['google_id'],
+                    'google_avatar' => $_SESSION['google_avatar'],
+                    'google_expiry_token' => $_SESSION['google_expiry_token'],
+
+                    'linkedin_access_token' => $_SESSION['linkedin_access_token'],
+                    'linkedin_refresh_token' => $_SESSION['linkedin_refresh_token'],
+                    'linkedin_account' => $_SESSION['linkedin_account'],
+                    'linkedin_id' => $_SESSION['linkedin_id'],
+                    'linkedin_avatar' => $_SESSION['linkedin_avatar'],
+                    'linkedin_expiry_token' => $_SESSION['linkedin_expiry_token'],
+
+                ]);
+
+                $_SESSION['login_type'] = $_SESSION['registration_type'];
+                return $user;
+            }
+        }else{
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => strtolower($data['email']),
+                'organization_id' => $org_id,
+                'organization_owner' => $data['owner'],
+                'password' => Hash::make($data['password']),
+                'verify_token' => Str::random(40),
+            ]);
+
+            $curUser = User::findOrFail($user->id);
+            $this->sendEmail($curUser);
+            return $user;
+        }
     }
 
     public function verifyEmailFirst($email){
@@ -150,7 +169,7 @@ class RegisterController extends Controller
             new VerifyToken($curUser)
         );
 
-        return view('auth.verify', ['email' => strtolower($email), 'resend' => true]);
+        return view('auth.verify')->with(['email' => strtolower($email), 'resend' => true]);
     }
 
     public function verifying($email, $token){

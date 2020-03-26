@@ -1,3 +1,8 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+?>
 @extends('layouts.app')
 
 @section('style-register')
@@ -19,50 +24,84 @@
                 <form method="POST" action="{{ route('register') }}" autocomplete="off">
                     @csrf
 
-                    <div class="form-group">
-                        <label for="name" class="m-0">{{ __('Name') }}</label>
+                    @if(isset($_SESSION['registration_type']) && $_SESSION['registration_type'] != 'email')
+                        <div class="form-group">
+                            <label for="name" class="m-0">{{ __('Name') }}</label>
 
-                        @if (!empty($name))
                             <input id="name" type="text"
                                    class="form-control @error('name') is-invalid @enderror" name="name"
-                                   value="{{ $name }}" required autocomplete="name" autofocus>
-                        @else
-                            <input id="name" type="text"
-                                   class="form-control @error('name') is-invalid @enderror" name="name"
-                                   value="{{ old('name') }}" required autocomplete="name" autofocus>
-                        @endif
+                                   value="{{ $_SESSION['user_name'] }}" required autocomplete="name" autofocus readonly>
 
-                        @error('name')
-                        <span class="invalid-feedback" role="alert">
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                        @enderror
-                    </div>
+                            @enderror
+                        </div>
 
-                    <div class="form-group">
-                        <label for="email"
-                               class="m-0">{{ __('E-Mail Address') }}</label>
+                        <div class="form-group">
+                            <label for="email"
+                                   class="m-0">{{ __('E-Mail Address') }}</label>
 
-                        @if (!empty($email))
                             <input id="email" type="email"
                                    class="form-control @error('email') is-invalid @enderror"
                                    name="email"
-                                   value="{{ $email }}"
-                                   required autocomplete="email">
-                        @else
-                            <input id="email" type="email"
-                                   class="form-control @error('email') is-invalid @enderror"
-                                   name="email"
-                                   value="{{ old('email') }}"
-                                   required autocomplete="email">
-                        @endif
+                                   value="{{ $_SESSION['user_email'] }}"
+                                   required autocomplete="email" readonly>
 
-                        @error('email')
-                        <span class="invalid-feedback" role="alert">
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                        @enderror
-                    </div>
+                            @enderror
+                        </div>
+
+                    @else
+                        <div class="form-group">
+                            <label for="name" class="m-0">{{ __('Name') }}</label>
+
+                            @if (!empty($name))
+                                <input id="name" type="text"
+                                       class="form-control @error('name') is-invalid @enderror" name="name"
+                                       value="{{ $name }}" required autocomplete="name" autofocus>
+                            @else
+                                <input id="name" type="text"
+                                       class="form-control @error('name') is-invalid @enderror" name="name"
+                                       value="{{ old('name') }}" required autocomplete="name" autofocus>
+                            @endif
+
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email"
+                                   class="m-0">{{ __('E-Mail Address') }}</label>
+
+                            @if (!empty($email))
+                                <input id="email" type="email"
+                                       class="form-control @error('email') is-invalid @enderror"
+                                       name="email"
+                                       value="{{ $email }}"
+                                       required autocomplete="email">
+                            @else
+                                <input id="email" type="email"
+                                       class="form-control @error('email') is-invalid @enderror"
+                                       name="email"
+                                       value="{{ old('email') }}"
+                                       required autocomplete="email">
+                            @endif
+
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+                    @endif
 
                     <div class="form-group">
                         <label for="password"

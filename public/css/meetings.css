@@ -1,3 +1,47 @@
+@media screen and (max-width: 768px) {
+  .main-container {
+    width: 100% !important;
+  }
+  .main-container .meeting-score {
+    padding: 5px 20px;
+  }
+  .main-container .tabs-container {
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  .main-container .tabs-container .tab-my-meetings .table-responsive {
+    display: none !important;
+  }
+  .main-container .tabs-container .tab-my-meetings .table-mobile {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 20px 0;
+  }
+  .main-container .tabs-container .tab-my-meetings .table-mobile .trow:first-child {
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .main-container .tabs-container .tab-my-meetings .table-mobile .trow {
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: flex;
+  }
+  .main-container .tabs-container .tab-my-meetings .table-mobile .trow .tcol {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    font-size: 11px;
+    padding: 5px;
+  }
+  .main-container .tabs-container .tab-my-meetings .table-mobile .trow .tcol .tcol-title {
+    font-weight: 700;
+  }
+  .main-container .tabs-container .tab-settings {
+    padding-top: 20px !important;
+  }
+}
 main.py-4 {
   position: relative;
 }
@@ -29,20 +73,36 @@ main.py-4 {
   font-weight: 600;
 }
 .main-container .meeting-score .score {
-  font-size: 108px;
-  line-height: 100px;
-  height: 100%;
   display: flex;
+}
+.main-container .meeting-score .score .score-value {
+  font-size: 108px;
+  margin-top: -30px !important;
 }
 .main-container .meeting-score .score .sharing {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 20px;
+  justify-content: center;
+}
+.main-container .meeting-score .score .sharing .linkedin {
+  font-size: 16px;
+  padding: 5px 10px;
+  background-color: #006097;
+  color: #fff;
+  line-height: unset !important;
+  border-radius: 2px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+.main-container .meeting-score .score .sharing .linkedin a {
+  color: #fff;
+  font-weight: 600;
 }
 .main-container .meeting-score .score .sharing .linkedin span {
-  line-height: unset !important;
+  background-color: #fff;
+  color: #006097;
+  padding: 1px 3px;
+  border-radius: 2px;
 }
 .main-container .tabs {
   font-family: Merriweather, 'serif';
@@ -73,10 +133,14 @@ main.py-4 {
 .main-container .tabs-container .tab-content.active {
   display: block;
 }
-.main-container .tabs-container .tab-my-meetings table {
+.main-container .tabs-container .tab-my-meetings .table-mobile {
+  display: none;
+}
+.main-container .tabs-container .tab-my-meetings .table-responsive {
+  display: block;
   border: 0;
 }
-.main-container .tabs-container .tab-my-meetings table th {
+.main-container .tabs-container .tab-my-meetings .table-responsive th {
   border: 0;
 }
 .main-container .tabs-container .tab-settings .tbl-settings {

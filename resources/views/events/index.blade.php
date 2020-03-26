@@ -21,14 +21,10 @@
                     {{number_format($global_avg, 2)}}
                 </div>
 
-
                 <div class="sharing">
-                    <div class="linkedin">
-                        <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
-                        <script type="IN/Share"
-                                data-url="{{env('APP_URL') . '/score/' . number_format($global_avg, 2)}}"
-                                data-image="{{asset('img/ban.png')}}"></script>
-                    </div>
+                    <a href="{{env('APP_URL').'/shareonlinkedin/'}}" class="linkedin">
+                        <span class="fab fa-linkedin-in"></span> Share
+                    </a>
                 </div>
             </div>
         </div>
@@ -91,6 +87,47 @@
                         </tfoot>
                     </table>
                 </div>
+
+                <div class="table-mobile">
+                    @if(count($newEvents) > 0)
+                        @foreach($newEvents as $event)
+                            <div class="trow">
+                                <div class="tcol tcol-left">
+                                    <div class="tcol-line">
+                                        <span class="tcol-title">Provider</span>
+                                        <span class="tcol-data">{{ ucwords($event->provider) }}</span>
+                                    </div>
+                                    <div class="tcol-line">
+                                        <span class="tcol-title">Organizer</span>
+                                        <span class="tcol-data">{{$event->name}}</span>
+                                    </div>
+                                    <div class="tcol-line">
+                                        <span class="tcol-title">Title</span>
+                                        <span class="tcol-data">{{$event->title}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="tcol tcol-right">
+                                    <div class="tcol-line">
+                                        <span class="tcol-title">Start Date</span>
+                                        <span class="tcol-data">{{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</span>
+                                    </div>
+                                    <div class="tcol-line">
+                                        <span class="tcol-title">End Date</span>
+                                        <span class="tcol-data">{{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</span>
+                                    </div>
+                                    <div class="tcol-line">
+                                        <span class="tcol-title">Rate</span>
+                                        <span class="tcol-data">{{$event->rate === null ? 'unrated' : number_format($event->rate,1)}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+
+                    @endif
+                </div>
+
             </div>
 
             <div class="tab-content tab-team">
@@ -250,5 +287,9 @@
             </div>
         </div>
     </div>
+
+    @if(isset($shared))
+        <p>Your Meeting Score have been shared on LinkedIn successfully</p>
+    @endif
 
 @endsection

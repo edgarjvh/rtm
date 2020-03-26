@@ -17,7 +17,7 @@
                 <img src="img/reg-opt-1.png" alt="">
 
                 <p>
-                    Do you want to <span class="highlighted">join</span> an existing organization?
+                    <span>Do you want to <span class="highlighted">join</span> an existing organization?</span>
                 </p>
 
                 <div class="bottom-line"></div>
@@ -27,7 +27,7 @@
                 <img src="img/reg-opt-2.png" alt="">
 
                 <p>
-                    Do you want to <span class="highlighted">create</span> your own organization?
+                    <span>Do you want to <span class="highlighted">create</span> your own organization?</span>
                 </p>
 
                 <div class="bottom-line"></div>

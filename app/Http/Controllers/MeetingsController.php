@@ -38,12 +38,21 @@ class MeetingsController extends Controller
 
     public function calendarAuthorization()
     {
-        return view('home')->with(['userLogged' => $this->user]);
+        $org = Organization::where('id', $this->user->organization_id)->first();
+        $organization = $org->name;
+
+        return view('home')->with(['userLogged' => $this->user, 'organization' => $organization]);
     }
 
     public function showInvitations()
     {
-        return view('invite-your-team');
+        $org = Organization::where('id', $this->user->organization_id)->first();
+        $organization = $org->name;
+
+        $this->user->has_invited = 1;
+        $this->user->save();
+
+        return view('invite-your-team')->with(['organization' => $organization]);
     }
 
     public function sendInvitations(Request $request)
