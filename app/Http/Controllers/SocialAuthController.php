@@ -73,10 +73,13 @@ class SocialAuthController extends Controller
                             ]);
                             $data = json_decode($response->getBody()->getContents(), true);
 
-                            dd($data);
 
 
                             $access_token = $data['access_token'];
+
+                            $this->user->linkedin_access_token = $access_token;
+                            $this->user->linkedin_expiry_token = $data['expires_in'];
+                            $this->user->save();
 
                             $linkedin_profile_id = $this->user->linkedin_id;
 

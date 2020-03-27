@@ -65,7 +65,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-//        dd($data);
+//        dd($_SESSION);
 
         $org_id = 0;
 
@@ -122,6 +122,7 @@ class RegisterController extends Controller
                 ]);
 
                 $_SESSION['login_type'] = $_SESSION['registration_type'];
+                Auth::login($user);
                 return $user;
             }
         }else{
