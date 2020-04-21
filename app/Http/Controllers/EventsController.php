@@ -21,6 +21,10 @@ class EventsController extends Controller
 
     public function __construct()
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $this->middleware(function ($request, $next) {
             $this->middleware(['auth', 'verified']);
 
@@ -28,19 +32,29 @@ class EventsController extends Controller
                 Redirect::to('login')->send();
             } else {
                 if (!Auth::user()->email_verified_at) {
-                    Redirect::to('/email/verify')->send();
+                    return view('auth.verify', ['email' => strtolower(Auth::user()->email)]);
                 }
+
                 $this->user = Auth::user();
 
+//                dd(!isset($this->user->organization_owner));
+
+                if (!isset($this->user->organization_owner)) {
+                    if (!isset($_SESSION['organization_owner'])) {
+                        Redirect::to('/registration')->send();
+                    }
+                }
+
                 if ($this->user->organization_id == 0) {
+
                     Redirect::to('/organization-setup')->send();
                 }
 
-                if (!$this->user->google_access_token && !$this->user->outlook_access_token){
+                if (!$this->user->google_access_token && !$this->user->outlook_access_token) {
                     Redirect::to('/calendar-authorization')->send();
                 }
 
-                if ($this->user->has_invited == 0){
+                if ($this->user->has_invited == 0) {
                     Redirect::to('/invite-your-team')->send();
                 }
             }
@@ -118,7 +132,7 @@ class EventsController extends Controller
         $timezone = 'America/Caracas';
 //        $timezone = $this->get_local_time();
 
-        if (isset($shared)){
+        if (isset($shared)) {
             dd($shared);
         }
 

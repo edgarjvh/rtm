@@ -9,18 +9,25 @@ Route::get('/', function () {
 
 Route::get('/test', 'RatingsController@test');
 
+Route::get('/registration', 'Auth\RegistrationController@showRegistration')->name('registration');
+
+Route::post('/deleteAccount', 'Auth\RegistrationController@deleteAccount');
+
+Route::post('/join', 'Auth\RegistrationController@showJoin')->name('join');
 Route::get('/join', function (){
-    return view('auth.join');
+    return redirect('/registration');
 });
+
+Route::post('/create', 'Auth\RegistrationController@showCreate')->name('create');
 Route::get('/create', function (){
-    return view('auth.create');
+    return redirect('/registration');
 });
 
 Auth::routes(['verify' => true]);
 
-Route::get('verifyEmailFirst/{email}', 'Auth\RegisterController@verifyEmailFirst')->name('verifyEmailFirst');
-Route::get('verifying/{email}/{token}', 'Auth\RegisterController@verifying')->name('verifying');
-Route::get('email/resend/{email}', 'Auth\RegisterController@resendEmail')->name('resendEmail');
+Route::get('verifying/{email}/{token}', 'Auth\VerifyController@verifying')->name('verifying');
+Route::get('email/resend/{email}', 'Auth\VerifyController@resendEmail')->name('resendEmail');
+Route::get('verifyEmailFirst/{email}', 'Auth\VerifyController@verifyEmailFirst')->name('verifyEmailFirst');
 
 Route::get('/password/request', 'Auth\ResetPasswordController@requestNewPassword')->name('passwordRequest');
 Route::post('/password/sent', 'Auth\ResetPasswordController@passwordSent')->name('passwordSent');
@@ -34,6 +41,7 @@ Route::get('/getstarted', function (){
 Route::resource('cal', 'gCalendarController');
 Route::get('googleAuth', 'gCalendarController@googleAuth');
 Route::get('ref', 'gCalendarController@getByRefreshToken');
+Route::get('rtheirm', 'gCalendarController@handleRateTheirMeeting');
 
 Route::resource('/home', 'EventsController')->name('index', 'home');
 
@@ -81,8 +89,14 @@ Route::post('/checkorg', 'OrganizationController@checkorg');
 
 Route::get('/error', 'ErrorController@showMessage')->name('error');
 
+Route::get('/sendEmail/{email}/{rating_key}/{event_id}', 'MessagesController@sendEmail');
+
+Route::get('/getip', 'EventsController@return_ip');
+
+
+// =============== FOR TESTING PURPOSES ================
 Route::get('/rate', function (){
-    return view('emails.rate-event1')->with(['rating_key' => 'this-is-a-rating-key', 'event_id' => '554']);
+    return view('emails.host-event1')->with(['token_host' => 'adakdaukshadudhaksudhkuawhduka']);
 });
 
 Route::get('/rate1', function (){
@@ -100,15 +114,7 @@ Route::get('/ver', function (){
 Route::get('/res', function (){
     return view('emails.password-reset')->with(['user' => new myUser('edgarjvh@gmail.com', 'dadadhawda7823yehbda7')]);
 });
-
-Route::get('/sendEmail/{email}/{rating_key}/{event_id}', 'MessagesController@sendEmail');
-
-Route::get('/getip', 'EventsController@return_ip');
-
-
-
-
-
+// ======================================================
 
 class myUser{
     public $email;

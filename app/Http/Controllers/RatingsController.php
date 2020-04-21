@@ -18,7 +18,7 @@ class RatingsController extends Controller
         $rating = new Rating();
 
         if ($key) {
-            if ($key->status === 0) {
+            if ($key->status == 0) {
                 $rating->event_id = $event_id;
                 $rating->rating_key = $rating_key;
                 $rating->rate = $rate;

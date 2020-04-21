@@ -2,6 +2,13 @@
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
+
+if (isset($_SESSION['login_type'])){
+    \Illuminate\Support\Facades\Redirect::to('/home')->send();
+}
+
+$_SESSION['organization_owner'] = 0;
+
 ?>
 @extends('layouts.app')
 
@@ -144,6 +151,24 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
                     <input type="hidden" name="type" value="owner">
                 </form>
+
+                <div class="or-login-with">
+                    <div class="line-container">
+                        <div class="left-line"></div>
+                        <div class="center-line">Or</div>
+                        <div class="right-line"></div>
+                    </div>
+                </div>
+
+                <div class="social-buttons">
+                    <a href="{{url('/login/google')}}">
+                        <img src="{{asset('img/google.png')}}" alt=""> Continue with Google
+                    </a>
+
+                    <a href="{{url('/login/linkedin')}}">
+                        <img src="{{asset('img/linkedin.png')}}" alt=""> Continue with LinkedIn
+                    </a>
+                </div>
             </div>
         </div>
     </div>

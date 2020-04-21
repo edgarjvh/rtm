@@ -7,7 +7,9 @@ use App\Rating;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Socialite;
 use App\User;
 use Auth;
@@ -240,53 +242,37 @@ EOD;
                             }
 
                             $shared = 'linkedin';
-
-                            return redirect()->route('home')->withErrors(compact('shared'));
+                            $_SESSION['shared'] = 'not-shared';
+                            Redirect::to('/home')->send();
+//                            return redirect()->route('home')->withErrors(compact('shared'));
                         }
                     }
 
                     $userSocial = Socialite::driver($provider)->user();
 
-//                    dd($userSocial);
+                    $user = User::firstOrCreate([
+                        'email' => $userSocial->email
+                    ], [
+                        'name' => $userSocial->name,
+                        'password' => Hash::make(Str::random(10)),
+                        'email_verified_at' => now(),
+                        'linkedin_account' => $userSocial->email,
+                        'linkedin_access_token' => $userSocial->token,
+                        'linkedin_refresh_token' => null,
+                        'linkedin_id' => $userSocial->id,
+                        'linkedin_expiry_token' => $userSocial->expiresIn,
+                        'linkedin_avatar' => $userSocial->avatar,
+//                        'organization_id' => 0,
+//                        'organization_owner' => $_SESSION['organization_owner']
+                    ]);
 
-                    $user = User::where(['email' => $userSocial->email])->first();
+                    Auth::login($user);
+                    $_SESSION['login_type'] = 'linkedin';
+                    return redirect('/home');
 
-                    if ($user) {
-                        User::where(['email' => $userSocial->email])->update(array(
-                            'linkedin_account' => $userSocial->email,
-                            'linkedin_id' => $userSocial->id,
-                            'linkedin_access_token' => $userSocial->token,
-                            'linkedin_avatar' => $userSocial->avatar,
-                            'linkedin_expiry_token' => $userSocial->expiresIn,
-                        ));
-
-                        Auth::login($user);
-                        $_SESSION['login_type'] = 'linkedin';
-                        return redirect('/home');
-
-                    } else {
-                        $_SESSION['registration_type'] = 'linkedin';
-                        $_SESSION['user_name'] = $userSocial->name;;
-                        $_SESSION['user_email'] = $userSocial->email;
-
-                        $_SESSION['linkedin_account'] = $userSocial->email;
-                        $_SESSION['linkedin_access_token'] = $userSocial->token;
-                        $_SESSION['linkedin_refresh_token'] = null;
-                        $_SESSION['linkedin_id'] = $userSocial->id;
-                        $_SESSION['linkedin_expiry_token'] = $userSocial->expiresIn;
-                        $_SESSION['linkedin_avatar'] = $userSocial->avatar;
-
-                        $_SESSION['google_account'] = null;
-                        $_SESSION['google_access_token'] = null;
-                        $_SESSION['google_refresh_token'] = null;
-                        $_SESSION['google_id'] = null;
-                        $_SESSION['google_expiry_token'] = null;
-                        $_SESSION['google_avatar'] = null;
-
-                        return Redirect::to('/register');
-                    }
                 } catch (\GuzzleHttp\Exception\ClientException $e) {
-                    dd($e);
+                    $_SESSION['shared'] = 'not-shared';
+                    Redirect::to('/home')->send();
                 }
 
                 break;
@@ -295,51 +281,34 @@ EOD;
 
                 try {
                     $userSocial = Socialite::driver($provider)->user();
-//                    dd($userSocial->email);
 
-                    $user = User::where(['email' => $userSocial->email])->first();
+                    $user = User::firstOrCreate([
+                        'email' => $userSocial->email
+                    ], [
+                        'name' => $userSocial->name,
+                        'password' => Hash::make(Str::random(10)),
+                        'email_verified_at' => now(),
+                        'google_account' => $userSocial->email,
+                        'google_access_token' => $userSocial->token,
+                        'google_refresh_token' => $userSocial->refreshToken,
+                        'google_id' => $userSocial->id,
+                        'google_expiry_token' => $userSocial->expiresIn,
+                        'google_avatar' => $userSocial->avatar,
+//                        'organization_id' => 0,
+//                        'organization_owner' => $_SESSION['organization_owner']
+                    ]);
 
-                    if ($user) {
-                        User::where(['email' => $userSocial->email])->update(array(
-                            'google_access_token' => $userSocial->token,
-                            'google_refresh_token' => $userSocial->refreshToken,
-                            'google_expiry_token' => $userSocial->expiresIn,
-                            'google_avatar' => $userSocial->avatar,
-                            'google_id' => $userSocial->id
-                        ));
+                    Auth::login($user);
+                    $_SESSION['login_type'] = 'google';
+                    return redirect('/home');
 
-                        Auth::login($user);
-                        $_SESSION['login_type'] = 'google';
-                        return redirect('/home');
-                    } else {
-                        $_SESSION['registration_type'] = 'google';
-                        $_SESSION['user_name'] = $userSocial->name;;
-                        $_SESSION['user_email'] = $userSocial->email;
-
-                        $_SESSION['google_account'] = $userSocial->email;
-                        $_SESSION['google_access_token'] = $userSocial->token;
-                        $_SESSION['google_refresh_token'] = $userSocial->refreshToken;
-                        $_SESSION['google_id'] = $userSocial->id;
-                        $_SESSION['google_expiry_token'] = $userSocial->expiresIn;
-                        $_SESSION['google_avatar'] = $userSocial->avatar;
-
-                        $_SESSION['linkedin_account'] = null;
-                        $_SESSION['linkedin_access_token'] = null;
-                        $_SESSION['linkedin_refresh_token'] = null;
-                        $_SESSION['linkedin_id'] = null;
-                        $_SESSION['linkedin_expiry_token'] = null;
-                        $_SESSION['linkedin_avatar'] = null;
-
-                        return Redirect::to('/register');
-//                        die();
-                    }
                 } catch (\GuzzleHttp\Exception\ClientException $e) {
-                    dd($e);
+                    return redirect('/home');
                 }
 
                 break;
             default:
-
+                return redirect('/home');
                 break;
         }
     }

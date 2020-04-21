@@ -1,3 +1,37 @@
+@media screen and (max-width: 768px){
+  .home-container{
+    padding: 10px !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+
+    .title{
+      font-size: 20px !important;
+    }
+
+    > p{
+
+    }
+
+    .calendars{
+      flex-direction: column !important;
+      justify-content: center;
+
+      .calendar-container{
+        margin-right: 0 !important;
+        margin-bottom: 40px !important;
+        align-items: center !important;
+
+        .calendar-icon{
+          padding: 0 !important;
+          margin: 0 !important;
+          display: flex;
+          align-items: flex-end;
+        }
+      }
+    }
+  }
+}
+
 main.py-4{
   background-color: #EDEEF0 !important;
 }
@@ -96,7 +130,7 @@ main.py-4{
         border: 2px solid #CC6666;
         text-transform: uppercase;
         font-weight: 600;
-        padding: 3px 5px;
+        padding: 3px 15px;
         border-radius: 5px;
       }
     }

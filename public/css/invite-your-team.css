@@ -106,6 +106,7 @@ main.py-4 {
 .main-container .inv-options .opt .submit {
   display: flex;
   justify-content: flex-end;
+  margin: 20px 0 30px 0;
 }
 .main-container .inv-options .opt .submit button[type=submit] {
   transition: ease 0.2s;
@@ -113,6 +114,15 @@ main.py-4 {
 .main-container .inv-options .opt .submit button[type=submit]:hover {
   background-color: #CC6666;
   color: #fff !important;
+}
+.main-container .inv-options .opt .continue-btn a {
+  border: 0;
+  text-align: right;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.main-container .inv-options .opt .continue-btn a:hover {
+  text-decoration: underline;
 }
 .main-container .inv-options .opt:last-child {
   margin-left: 50px;

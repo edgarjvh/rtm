@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class OrganizationController extends Controller
 {
+    public function __construct()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+    }
+
     public function checkorg(Request $request){
         $org = trim($request->all()['orgName']);
 
@@ -32,18 +39,43 @@ class OrganizationController extends Controller
         $user = Auth::user();
         $org = trim($request->all()['organization']);
 
-        if ($user->organization_owner == 0){
-            User::where('id', $user->id)->update(['organization_id' => $org]);
+//        dd(isset($user->organization_owner));
+        if (isset($user->organization_owner)){
+            if ($user->organization_owner == 0){
+                User::where('id', $user->id)->update([
+                    'organization_id' => $org
+                ]);
 
-            return redirect('/home');
+                return redirect('/home');
+            }else{
+                $organization = Organization::create([
+                    'name' => $org
+                ]);
+
+                User::where('id', $user->id)->update(['organization_id' => $organization->id]);
+
+                return redirect('/home');
+            }
         }else{
-            $organization = Organization::create([
-                'name' => $org
-            ]);
+            if ($_SESSION['organization_owner'] == 0){
+                User::where('id', $user->id)->update([
+                    'organization_id' => $org,
+                    'organization_owner' => $_SESSION['organization_owner']
+                ]);
 
-            User::where('id', $user->id)->update(['organization_id' => $organization->id]);
+                return redirect('/home');
+            }else{
+                $organization = Organization::create([
+                    'name' => $org
+                ]);
 
-            return redirect('/home');
+                User::where('id', $user->id)->update([
+                    'organization_id' => $organization->id,
+                    'organization_owner' => $_SESSION['organization_owner']
+                ]);
+
+                return redirect('/home');
+            }
         }
     }
 }

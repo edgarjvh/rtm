@@ -31,6 +31,6 @@ class RateEvent extends Mailable
 
     public function build()
     {
-        return $this->view('emails.rate-event');
+        return $this->view('emails.rate-event1');
     }
 }

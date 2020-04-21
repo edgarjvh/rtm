@@ -1,3 +1,9 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+?>
+
 @extends('layouts.app')
 
 @section('style-register')
@@ -21,59 +27,112 @@
 
                     <input type="hidden" id="owner" name="owner" value="{{$owner}}">
 
-                    @if ($owner == 1)
-                        <div class="form-group" style="position: relative;">
-                            <label for="txt-organization"
-                                   class="m-0">Organization Name</label>
+                    @if(!isset($owner))
+                        @if($_SESSION['organization_owner'] == 1)
+                            <div class="form-group" style="position: relative;">
+                                <label for="txt-organization"
+                                       class="m-0">Organization Name</label>
 
-                            <input id="txt-organization" type="text"
-                                   class="form-control @error('organization') is-invalid @enderror"
-                                   name="organization" required
-                                   autocomplete="organization">
+                                <input id="txt-organization" type="text"
+                                       class="form-control @error('organization') is-invalid @enderror"
+                                       name="organization" required
+                                       autocomplete="organization">
 
-                            <div id="org-msg"></div>
+                                <div id="org-msg"></div>
 
-                            @error('organization')
-                            <span class="invalid-feedback" role="alert">
+                                @error('organization')
+                                <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
 
-                            @enderror
-                            <div class="ctl-drop-down">
+                                @enderror
+                                <div class="ctl-drop-down">
 
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group submit">
-                            <button type="submit" class="nav-link" id="next-btn" disabled>
-                                NEXT
-                            </button>
-                        </div>
+                            <div class="form-group submit">
+                                <button type="submit" class="nav-link" id="next-btn" disabled>
+                                    NEXT
+                                </button>
+                            </div>
+                        @else
+                            <div class="form-group" style="position: relative;">
+                                <label for="cbo-organization"
+                                       class="m-0">Select your organization</label>
+
+                                <select name="organization" id="cbo-organization" class="form-control" required>
+                                    <option value="0">---</option>
+                                    @if(count($orgs) > 0)
+
+                                        @foreach($orgs as $org)
+                                            <option value="{{$org->id}}">{{$org->name}}</option>
+                                        @endforeach
+
+                                    @endif
+
+                                </select>
+                            </div>
+
+                            <div class="form-group submit">
+                                <button type="submit" class="nav-link" id="next-btn" disabled>
+                                    NEXT
+                                </button>
+                            </div>
+                        @endif
                     @else
-                        <div class="form-group" style="position: relative;">
-                            <label for="cbo-organization"
-                                   class="m-0">Select your organization</label>
+                        @if ($owner == 1)
+                            <div class="form-group" style="position: relative;">
+                                <label for="txt-organization"
+                                       class="m-0">Organization Name</label>
 
-                            <select name="organization" id="cbo-organization" class="form-control" required>
-                                <option value="0">---</option>
-                                @if(count($orgs) > 0)
+                                <input id="txt-organization" type="text"
+                                       class="form-control @error('organization') is-invalid @enderror"
+                                       name="organization" required
+                                       autocomplete="organization">
 
-                                    @foreach($orgs as $org)
-                                        <option value="{{$org->id}}">{{$org->name}}</option>
-                                    @endforeach
+                                <div id="org-msg"></div>
 
-                                @endif
+                                @error('organization')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
 
-                            </select>
-                        </div>
+                                @enderror
+                                <div class="ctl-drop-down">
 
-                        <div class="form-group submit">
-                            <button type="submit" class="nav-link" id="next-btn" disabled>
-                                NEXT
-                            </button>
-                        </div>
+                                </div>
+                            </div>
 
+                            <div class="form-group submit">
+                                <button type="submit" class="nav-link" id="next-btn" disabled>
+                                    NEXT
+                                </button>
+                            </div>
+                        @else
+                            <div class="form-group" style="position: relative;">
+                                <label for="cbo-organization"
+                                       class="m-0">Select your organization</label>
 
+                                <select name="organization" id="cbo-organization" class="form-control" required>
+                                    <option value="0">---</option>
+                                    @if(count($orgs) > 0)
+
+                                        @foreach($orgs as $org)
+                                            <option value="{{$org->id}}">{{$org->name}}</option>
+                                        @endforeach
+
+                                    @endif
+
+                                </select>
+                            </div>
+
+                            <div class="form-group submit">
+                                <button type="submit" class="nav-link" id="next-btn" disabled>
+                                    NEXT
+                                </button>
+                            </div>
+                        @endif
                     @endif
                 </form>
             </div>

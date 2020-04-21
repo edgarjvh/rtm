@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\DB;
@@ -49,12 +50,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        if (isset($_SESSION['th'])){
+            return Validator::make($data, [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
 //            'organization' => ['required', 'string', 'max:191'],
-        ]);
+            ]);
+        }else{
+            return Validator::make($data, [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+//            'organization' => ['required', 'string', 'max:191'],
+            ]);
+        }
     }
 
     /**
@@ -94,7 +104,31 @@ class RegisterController extends Controller
                 $curUser = User::findOrFail($user->id);
                 $this->sendEmail($curUser);
                 return $user;
-            }else{
+
+            }else if($_SESSION['registration_type'] == 'other'){
+                if (isset($_SESSION['th'])){
+
+                    User::where('email', strtolower($data['email']))->delete();
+
+                    $user = User::create([
+                        'name' => $data['name'],
+                        'email' => strtolower($data['email']),
+                        'organization_id' => 0,
+                        'organization_owner' => 1,
+                        'password' => Hash::make($data['password']),
+                        'verify_token' => Str::random(40),
+                        'email_verified_at' => now(),
+                    ]);
+
+                    $_SESSION['th'] = null;
+                    $_SESSION['login_type'] = 'email';
+
+                    Auth::login($user);
+                    return $user;
+                }
+            }
+
+            else{
 
                 $user = User::create([
                     'name' => $data['name'],
@@ -129,10 +163,11 @@ class RegisterController extends Controller
             $user = User::create([
                 'name' => $data['name'],
                 'email' => strtolower($data['email']),
+                'email_verified_at' => now(),
                 'organization_id' => $org_id,
                 'organization_owner' => $data['owner'],
                 'password' => Hash::make($data['password']),
-                'verify_token' => Str::random(40),
+                'verify_token' => Str::random(40)
             ]);
 
             $curUser = User::findOrFail($user->id);
@@ -141,57 +176,9 @@ class RegisterController extends Controller
         }
     }
 
-    public function verifyEmailFirst($email){
-        $user = User::where('email', strtolower($email))->whereNotNull('email_verified_at')->first();
-
-        if ($user){
-            return redirect(route('login'));
-        }
-
-        return view('auth.verify', ['email' => strtolower($email), 'resend' => false]);
-    }
-
     public function sendEmail($curUser){
         Mail::to($curUser['email'])->send(
             new VerifyToken($curUser)
         );
     }
-
-    public function resendEmail($email){
-        $token = Str::random(40);
-
-        User::where('email', strtolower($email))->update(array(
-            'verify_token' => $token
-        ));
-
-        $curUser = User::where('email', strtolower($email))->first();
-
-        Mail::to(strtolower($email))->send(
-            new VerifyToken($curUser)
-        );
-
-        return view('auth.verify')->with(['email' => strtolower($email), 'resend' => true]);
-    }
-
-    public function verifying($email, $token){
-        $user = User::where(['email' => strtolower($email), 'verify_token' => $token])->first();
-
-        if ($user){
-            User::where(['email' => strtolower($email), 'verify_token' => $token])->update(array(
-                'email_verified_at' => date('Y-m-d H:i:s', time()),
-                'verify_token' => null
-            ));
-
-            if (Auth::loginUsingId($user->id)){
-                return redirect(route('/home'));
-            }else{
-                return redirect(route('/login'));
-            }
-
-        }else{
-            return view('error')->with('message', 'Invalid verification token');
-        }
-    }
-
-
 }

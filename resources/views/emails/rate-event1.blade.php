@@ -1,11 +1,4 @@
-<?php
-$organizer_email = 'edgarjvh@gmail.com';
-$meeting_subject = 'This is the subject';
-$start_date = '2019-12-06 15:30';
-$end_date = '2019-12-06 16:00';
-?>
-
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Rate this meeting</title>

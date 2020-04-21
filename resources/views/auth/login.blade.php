@@ -74,18 +74,18 @@
                 <div class="or-login-with">
                     <div class="line-container">
                         <div class="left-line"></div>
-                        <div class="center-line">Or Login With</div>
+                        <div class="center-line">Or</div>
                         <div class="right-line"></div>
                     </div>
                 </div>
 
                 <div class="social-buttons">
-                    <a href="{{url('/login/linkedin')}}" title="LinkedIn">
-                        <span class="fab fa-linkedin"></span>
+                    <a href="{{url('/login/google')}}">
+                        <img src="{{asset('img/google.png')}}" alt=""> Continue with Google
                     </a>
 
-                    <a href="{{url('/login/google')}}" title="Google">
-                        <span class="fab fa-google"></span>
+                    <a href="{{url('/login/linkedin')}}">
+                        <img src="{{asset('img/linkedin.png')}}" alt=""> Continue with LinkedIn
                     </a>
                 </div>
             </div>

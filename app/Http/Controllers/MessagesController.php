@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\RateEvent;
 use App\Mail\RateEventAttendee;
 use App\Mail\RateEventHost;
+use App\Mail\RateEventNewHost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -19,6 +20,12 @@ class MessagesController extends Controller
     public function sendEmailToHost($email, $rating_key, $event_id, $meeting_subject, $organizer_email, $start_date, $end_date)
     {
         Mail::to($email)->send(new RateEventHost($rating_key, $event_id, $meeting_subject, $organizer_email, $start_date, $end_date));
+        echo $email . ' - Message Sent <br>';
+    }
+
+    public function sendEmailToNewHost($email, $token_host)
+    {
+        Mail::to($email)->send(new RateEventNewHost($token_host));
         echo $email . ' - Message Sent <br>';
     }
 

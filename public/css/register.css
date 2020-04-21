@@ -34,24 +34,29 @@
   display: flex;
   justify-content: space-between;
 }
-.reg-container .reg-options .opt {
+.reg-container .reg-options form {
   display: flex;
-  flex-grow: 1;
   max-width: 48%;
   flex-basis: 100%;
+}
+.reg-container .reg-options form .opt {
+  display: flex;
+  flex-grow: 1;
   align-items: center;
   position: relative;
   padding-bottom: 50px;
   cursor: pointer;
   text-decoration: none;
+  background-color: transparent;
+  border: 0;
 }
-.reg-container .reg-options .opt img {
+.reg-container .reg-options form .opt img {
   max-width: 270px;
   max-height: 270px;
   width: 270px;
   z-index: 1;
 }
-.reg-container .reg-options .opt p {
+.reg-container .reg-options form .opt p {
   font-family: "Source Sans", sans-serif;
   font-weight: lighter;
   color: #5B5B5F;
@@ -66,11 +71,13 @@
   transition: ease 0.3s;
   display: flex;
   align-items: center;
+  padding-top: 35px;
+  padding-bottom: 35px;
 }
-.reg-container .reg-options .opt p span.highlighted {
+.reg-container .reg-options form .opt p span.highlighted {
   color: #CC6666;
 }
-.reg-container .reg-options .opt .bottom-line {
+.reg-container .reg-options form .opt .bottom-line {
   position: absolute;
   width: 0;
   height: 3px;
@@ -78,7 +85,7 @@
   bottom: 0;
   transition: width ease 0.3s;
 }
-.reg-container .reg-options .opt:hover p {
+.reg-container .reg-options form .opt:hover p {
   border-top: 2px solid #CC6666;
   border-right: 2px solid #CC6666;
   border-bottom: 2px solid #CC6666;

@@ -91,6 +91,26 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 </head>
 <body>
 
+<div class="modal-container">
+    <div class="modal-wrapper">
+        <div class="home-modal">
+            <p>
+                Are you sure to delete your account?
+            </p>
+
+            <div class="modal-footer">
+                <div class="modal-cancel-btn">
+                    Cancel
+                </div>
+
+                <div class="modal-delete-btn">
+                    Delete
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="sidemenu-modal"></div>
 
 <label class="topbar-toggle-btn" for="cbox-toggle-menu">
@@ -100,7 +120,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 <input type="checkbox" id="cbox-toggle-menu">
 
 <div class="sidebar-container">
-
     <div class="sidemenu">
         @guest
             <div class="sidebar-item">
@@ -108,7 +127,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             </div>
             @if (Route::has('register'))
                 <div class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('register') }}">Register</a>
+                    <a class="sidebar-link" href="{{ route('registration') }}">Register</a>
                 </div>
             @endif
         @else
@@ -124,12 +143,21 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 </div>
 
                 <div class="user-image">
-                    @if (Auth::user()->linkedin_avatar)
-                        <img src="{{Auth::user()->linkedin_avatar}}" alt="">
+                    @if(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'google')
+                        @if (Auth::user()->google_avatar)
+                            <img src="{{Auth::user()->google_avatar}}" alt="">
+                        @else
+                            <img src="{{asset('img/default-profile.png')}}" alt="">
+                        @endif
+                    @elseif(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'linkedin')
+                        @if (Auth::user()->linkedin_avatar)
+                            <img src="{{Auth::user()->linkedin_avatar}}" alt="">
+                        @else
+                            <img src="{{asset('img/default-profile.png')}}" alt="">
+                        @endif
                     @else
                         <img src="{{asset('img/default-profile.png')}}" alt="">
                     @endif
-
                 </div>
 
                 <a href="#" class="change-user-image" title="Change User Image">
@@ -170,7 +198,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 @endif
             </a>
 
-
             <div class="topbar-collapse-menu">
                 @guest
                     <div class="topbar-item">
@@ -178,7 +205,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </div>
                     @if (Route::has('register'))
                         <div class="topbar-item">
-                            <a class="nav-link" href="{{ route('register') }}">REGISTER</a>
+                            <a class="nav-link" href="{{ route('registration') }}">REGISTER</a>
                         </div>
                     @endif
                 @else

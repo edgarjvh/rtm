@@ -8,12 +8,11 @@
       align-items: center;
       .opt {
         padding-bottom: 20px !important;
-        img {
-          max-width: 150px !important;
-          max-height: 150px !important;
-          width: 150px !important;
-          margin-right: 0;
+        form{
+          width: 90% !important;
         }
+
+
       }
     }
   }
@@ -66,7 +65,7 @@ main.py-4 {
       //min-width: 365px;
 
       form {
-        width: 90%;
+        width: 100%;
 
         .form-group.submit {
           display: flex;
@@ -118,7 +117,7 @@ main.py-4 {
       .or-login-with {
         position: relative;
         width: 100%;
-        margin-bottom: 20px;
+        margin-top: 10px;
 
         .line-container {
           position: absolute;
@@ -130,21 +129,49 @@ main.py-4 {
 
           .left-line, .right-line {
             height: 1px;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.1);
             flex-grow: 1;
           }
 
           .center-line {
-            margin: 0 5px;
+            margin: 0;
+            color: #CC6666;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }
 
       .social-buttons {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 50px;
+
         a {
-          font-size: 32px;
+          font-size: 14px;
           color: #CC6666;
-          margin: 0 5px;
+          margin: 0;
+          text-decoration: none;
+          display: flex;
+          justify-content: center;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          margin-bottom: 10px;
+          padding: 4px 0;
+          border-radius: 5px;
+          align-items: center;
+
+          img{
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+          }
         }
       }
     }

@@ -14,6 +14,11 @@
       .opt.col{
         flex-direction: row !important;
         justify-content: space-evenly;
+
+        img{
+          width: 150px;
+          height: 150px;
+        }
       }
 
       .opt{
@@ -24,14 +29,7 @@
         form{
           width: 100% !important;
           max-width: 600px !important;
-          margin:  0 auto !important;
-        }
-
-        img{
-          max-width: 150px !important;
-          max-height: 150px !important;
-          width: 150px !important;
-          margin-right: 0 !important;
+          margin:  20px auto 0 auto !important;
         }
       }
     }
@@ -77,10 +75,11 @@ main.py-4{
       align-items: center;
       position: relative;
       padding-bottom: 50px;
+      flex-direction: column;
 
 
       form{
-        width: 90%;
+        width: 100%;
 
         .form-group.submit{
           display: flex;
@@ -128,6 +127,67 @@ main.py-4{
         background-color: #CC6666;
         bottom: 0;
         transition: width ease 0.3s;
+      }
+
+      .or-login-with {
+        position: relative;
+        width: 100%;
+        margin-top: 10px;
+
+        .line-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: flex;
+          width: 100%;
+          align-items: center;
+
+          .left-line, .right-line {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+          }
+
+          .center-line {
+            margin: 0;
+            color: #CC6666;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+
+      .social-buttons {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 50px;
+
+        a {
+          font-size: 14px;
+          color: #CC6666;
+          margin: 0;
+          text-decoration: none;
+          display: flex;
+          justify-content: center;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          margin-bottom: 10px;
+          padding: 4px 0;
+          border-radius: 5px;
+          align-items: center;
+
+          img{
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+          }
+        }
       }
     }
 

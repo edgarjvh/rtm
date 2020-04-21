@@ -9,6 +9,45 @@
 @section('content')
     @csrf
 
+
+
+    <div class="shared-msg" id="shared-msg">
+        Meeting Score has been shared on LinkedIn.
+    </div>
+
+    @if(isset($_SESSION['shared']))
+        @if($_SESSION['shared'] == 'shared')
+            <script>
+                document.getElementById('shared-msg').className = 'shared';
+                document.getElementById('shared-msg').innerHTML = 'Meeting Score has been shared on LinkedIn.';
+
+                setTimeout(function () {
+                    $(document).find('#shared-msg').css('height', '35px');
+                }, 500);
+
+                setTimeout(function () {
+                    $(document).find('#shared-msg').css('height', 0);
+                }, 5000);
+            </script>
+        @else
+            <script>
+                document.getElementById('shared-msg').className = 'not-shared';
+                document.getElementById('shared-msg').innerHTML = 'An error occured while trying to share on LinkedIn. Please try again in a few minutes.';
+
+                setTimeout(function () {
+                    $(document).find('#shared-msg').css('height', '35px');
+                }, 500);
+
+                setTimeout(function () {
+                    $(document).find('#shared-msg').css('height', 0);
+                }, 5000);
+            </script>
+        @endif
+
+    @endif
+
+    @unset($_SESSION['shared'])
+
     <div class="events-bg"></div>
 
     <div class="main-container">
@@ -33,9 +72,11 @@
             <div class="tab tab-my-meetings active" data-name="tab-my-meetings">
                 My Meetings
             </div>
-            <div class="tab tab-team" data-name="tab-team">
-                Team
-            </div>
+            @if($userLogged->organization_owner == 1)
+                <div class="tab tab-team" data-name="tab-team">
+                    Team
+                </div>
+            @endif
             <div class="tab tab-settings" data-name="tab-settings">
                 Settings
             </div>
@@ -130,9 +171,11 @@
 
             </div>
 
-            <div class="tab-content tab-team">
-                Tab Team
-            </div>
+            @if($userLogged->organization_owner == 1)
+                <div class="tab-content tab-team">
+                    Tab Team
+                </div>
+            @endif
 
             <div class="tab-content tab-settings">
                 <div class="tbl-settings">
@@ -209,7 +252,7 @@
                         </div>
 
                         <label for="cbox-set-google-calendar" class="not-clickable">
-                            <img src="{{asset('img/gmail.png')}}" alt="">
+                            <img src="{{asset('img/goo_singup.png')}}" alt="">
                             Google Calendar.
                         </label>
 

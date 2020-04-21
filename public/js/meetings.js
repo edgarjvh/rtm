@@ -188,6 +188,33 @@ $(document).ready(function () {
         list.find('.exclusion:last-child .input').focus();
     });
 
+    $(document).on('click', '.tbtn.delete-account', function (e) {
+       $(document).find('.modal-container').fadeIn(500);
+    });
+
+    $(document).on('click', '.modal-cancel-btn', function (e) {
+        $(document).find('.modal-container').fadeOut(500);
+    });
+
+    $(document).on('click', '.modal-delete-btn', function (e) {
+        $.ajax({
+            type: 'post',
+            url: '/deleteAccount',
+            dataType: 'json',
+            data: {
+                '_token': $('input[name=_token]').val()
+            },
+            success: function (response) {
+                if (response.logout === 'success'){
+                    window.location.href = '/login';
+                }
+            },
+            error: function (a, b, c) {
+                console.log('Error');
+            }
+        })
+    });
+
     loadMeetings();
 });
 

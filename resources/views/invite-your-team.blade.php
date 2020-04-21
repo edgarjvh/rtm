@@ -46,9 +46,9 @@
                         </button>
                     </div>
 
-                    <div class="form-group submit">
+                    <div class="form-group continue-btn">
                         <a href="/home" class="nav-link">
-                            GO HOME
+                            Or continue and send later
                         </a>
                     </div>
                 </form>
