@@ -1,0 +1,92 @@
+main.py-4 {
+  background-color: #EDEEF0 !important;
+}
+.score-ranking-container {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+.score-ranking-container .ranking-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.score-ranking-container .ranking-title span.title {
+  font-family: 'Merriweather', 'serif';
+  font-weight: bold;
+  font-style: italic;
+  color: #CC6666;
+  font-size: 20px;
+}
+.score-ranking-container .ranking-title img {
+  width: 80px;
+}
+.score-ranking-container .ranking-table {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Source Sans Pro', 'sans-serif';
+}
+.score-ranking-container .ranking-table .hidden {
+  display: none;
+}
+.score-ranking-container .ranking-table .thead,
+.score-ranking-container .ranking-table .tbody,
+.score-ranking-container .ranking-table .tbody-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.score-ranking-container .ranking-table .trow {
+  display: flex;
+  align-items: center;
+}
+.score-ranking-container .ranking-table .trow .tcol.avatar {
+  max-width: 70px;
+  min-width: 70px;
+}
+.score-ranking-container .ranking-table .trow .tcol.avatar img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px;
+}
+.score-ranking-container .ranking-table .trow .tcol.user-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  padding-left: 15px !important;
+}
+.score-ranking-container .ranking-table .trow .tcol.user-info .user-name {
+  font-weight: bold;
+}
+.score-ranking-container .ranking-table .trow .tcol.rate {
+  margin-left: 10px;
+}
+.score-ranking-container .ranking-table .tbody .trow {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  transition: ease 0.3s;
+}
+.score-ranking-container .ranking-table .tbody .trow .tcol {
+  padding: 20px 5px;
+}
+.score-ranking-container .ranking-table .tbody .trow .tcol.rate {
+  font-family: 'Merriweather', 'serif';
+  font-weight: bold;
+  font-style: italic;
+  color: #CC6666;
+  font-size: 24px !important;
+}
+.score-ranking-container .ranking-table .tbody .trow:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.score-ranking-container .ranking-table .tbody .trow:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+/*# sourceMappingURL=score-ranking.css.map */
