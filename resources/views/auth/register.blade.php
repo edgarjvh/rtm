@@ -7,7 +7,7 @@
 @section('content')
     <div class="reg-container">
         <div class="title">
-            Start now!
+            <span>Start now!</span>
         </div>
 
         <div class="reg-options">

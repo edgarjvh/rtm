@@ -78,6 +78,10 @@ main.py-4 {
 #shared-msg.not-shared {
   background-color: lightcoral;
 }
+.rate-responses {
+  color: #CC6666;
+  font-weight: 600;
+}
 .main-container {
   display: flex;
   flex-direction: column;

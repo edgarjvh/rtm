@@ -24,13 +24,22 @@ class RatingsController extends Controller
                 $rating->rate = $rate;
                 $rating->save();
 
-                return view('events.rated');
+                return view('events.rated')->with(['event_id' => $event_id, 'rating_key' => $rating_key]);
             } else {
                 return view('error')->with(['message' => 'Rating key has already been used']);
             }
         } else {
-            return view('error')->with(['message' => 'Rating key not found']);
+//            return view('error')->with(['message' => 'Rating key not found']);
+            return view('events.rated')->with(['event_id' => $event_id, 'rating_key' => $rating_key]);
         }
+    }
+
+    public function saveRatingComments(Request $request){
+        Rating::where(['event_id' => $request->eventid, 'rating_key' => $request->ratingkey])->update([
+            'comments' => $request->comments
+        ]);
+
+        return response()->json(['result' => 'OK', 'data' => $request->comments]);
     }
 
     public function test(){

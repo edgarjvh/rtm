@@ -5,6 +5,7 @@
     .title {
       font-size: 24px !important;
       margin-bottom: 30px;
+
     }
 
     .reg-options {
@@ -24,7 +25,10 @@
   background-color: #EDEEF0;
   display: flex;
   flex-direction: column;
-  padding: 70px 170px 0;
+  padding: 0 70px;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
 
   .title {
     font-family: 'Merriweather', 'serif';
@@ -33,11 +37,16 @@
     color: #CC6666;
     font-size: 36px;
     margin-bottom: 30px;
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    max-width: 1024px;
   }
 
   .reg-options {
     display: flex;
     justify-content: space-between;
+    max-width: 1024px;
 
     form {
       display: flex;
@@ -60,7 +69,6 @@
           max-width: 270px;
           max-height: 270px;
           width: 270px;
-          //margin-right: 20px;
           z-index: 1;
         }
 
@@ -72,6 +80,7 @@
           cursor: pointer;
           margin: 0 0 0 -50px;
           padding-left: 60px;
+          padding-right: 15px;
           height: 60%;
           border-top: 2px solid rgba(0, 0, 0, 0.05);
           border-right: 2px solid rgba(0, 0, 0, 0.05);
@@ -81,6 +90,7 @@
           align-items: center;
           padding-top: 35px;
           padding-bottom: 35px;
+          border-radius: 0 5px 5px 0;
 
           span.highlighted {
             color: #CC6666;

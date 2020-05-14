@@ -81,42 +81,61 @@ class EventsController extends Controller
 
         if ($this->user->organization_owner === 1) {
             $events = DB::select(
-                "(select
-                e.*, u.name
-                from users as u
-                left join events as e on u.google_account = e.organizer
-                where u.organization_id = " . $this->user->organization_id . " and e.event_id is not null)
-                UNION
-                (select
-                e.*, u.name
+                "select
+                IFNULL(avg(r.rate),0) as score,
+                e.*, u.name, count(r.event_id) as 'responses'
                 from events as e
-                left join users as u on u.outlook_account = e.organizer
-                where u.organization_id = " . $this->user->organization_id . " and e.event_id is not null)
-                order by start_date desc");
+                left join users as u on e.organizer = u.email
+                left join ratings as r on e.event_id = r.event_id
+                where u.organization_id = ". $this->user->organization_id ." and e.event_id is not null
+                GROUP BY 
+                e.event_id, 
+                e.id,
+                e.organizer,
+                e.start_date,
+                e.end_date,
+                e.attendees,
+                e.provider,
+                e.title,
+                e.description,
+                e.created_at,
+                e.updated_at,
+                u.name
+                order by start_date desc"
+            );
         } else {
             $events = DB::select(
-                "(select
-                e.*, u.name, concat('unrated') as rate
+                "select
+                IFNULL(avg(r.rate),0) as score,
+                e.*, u.name, count(r.event_id) as 'responses'
                 from events as e
-                left join users as u on e.organizer = u.google_account
-                where u.email = '" . strtolower(Auth::user()->email) . "')
-                UNION
-                (select
-                e.*, u.name, concat('unrated') as rate
-                from events as e
-                left join users as u on e.organizer = u.outlook_account
-                where u.email = '" . strtolower(Auth::user()->email) . "')
-                order by start_date desc");
+                left join users as u on e.organizer = u.email
+                left join ratings as r on e.event_id = r.event_id
+                where u.email = '" . strtolower(Auth::user()->email) . "'   
+                GROUP BY 
+                e.event_id, 
+                e.id,
+                e.organizer,
+                e.start_date,
+                e.end_date,
+                e.attendees,
+                e.provider,
+                e.title,
+                e.description,
+                e.created_at,
+                e.updated_at,
+                u.name             
+                order by start_date desc"
+            );
         }
 
         $rates = [];
 
         foreach ($events as $event) {
-            $rate = Rating::where('event_id', $event->event_id)->avg('rate');
-            $event->rate = $rate;
-
-            if (is_numeric($rate)) {
-                $rates[] = $rate;
+            if ($event->organizer == $this->user->email){
+                if ($event->score > 0) {
+                    $rates[] = $event->score;
+                }
             }
         }
 
@@ -131,10 +150,6 @@ class EventsController extends Controller
 
         $timezone = 'America/Caracas';
 //        $timezone = $this->get_local_time();
-
-        if (isset($shared)) {
-            dd($shared);
-        }
 
         return view('events.index')->with([
             'newEvents' => $events,

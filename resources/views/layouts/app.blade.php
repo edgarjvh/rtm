@@ -40,6 +40,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     @yield('style-verify-email')
     @yield('style-invite-team')
     @yield('style-rate-their-meeting')
+    @yield('style-ranking')
+    @yield('style-rated')
+
 
     <style>
         #app {
@@ -85,8 +88,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             flex-direction: column;
             flex-grow: 1;
             position: relative;
-
+            background-color: #EDEEF0 !important;
         }
+
     </style>
 </head>
 <body>

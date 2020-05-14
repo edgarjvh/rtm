@@ -88,7 +88,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">Provider</th>
+                            {{--<th scope="col">Provider</th>--}}
                             <th scope="col">Organizer</th>
                             <th scope="col">Title</th>
                             <th scope="col">Start Date</th>
@@ -100,10 +100,10 @@
                         @if(count($newEvents) > 0)
                             @foreach($newEvents as $event)
                                 <tr>
-                                    <td class="align-middle"><img
-                                                src="{{'/img/'.strtolower($event->provider) . '.png'}}"
-                                                style="width:16px; margin-top:-5px"
-                                                alt=""> {{ ucwords($event->provider) }}</td>
+                                    {{--<td class="align-middle"><img--}}
+                                                {{--src="{{'/img/'.strtolower($event->provider) . '.png'}}"--}}
+                                                {{--style="width:16px; margin-top:-5px"--}}
+                                                {{--alt=""> {{ ucwords($event->provider) }}</td>--}}
                                     <td class="align-middle">
                                         <b>{{$event->name}}</b>
                                         <br>
@@ -112,7 +112,7 @@
                                     <td class="align-middle">  {{$event->title}}</td>
                                     <td class="align-middle">{{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</td>
                                     <td class="align-middle">{{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</td>
-                                    <td class="align-middle">{{$event->rate === null ? 'unrated' : number_format($event->rate,1)}}</td>
+                                    <td class="align-middle"><span class="rate-responses">{{number_format($event->score,2)}}</span> ({{$event->responses}})</td>
                                 </tr>
                             @endforeach
                         @else
@@ -159,7 +159,7 @@
                                     </div>
                                     <div class="tcol-line">
                                         <span class="tcol-title">Rate</span>
-                                        <span class="tcol-data">{{$event->rate === null ? 'unrated' : number_format($event->rate,1)}}</span>
+                                        <span class="tcol-data"><span class="rate-responses">{{number_format($event->score,2)}}</span> ({{$event->responses}})</span>
                                     </div>
                                 </div>
                             </div>

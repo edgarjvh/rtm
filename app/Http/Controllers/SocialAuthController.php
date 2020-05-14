@@ -47,7 +47,8 @@ class SocialAuthController extends Controller
             default:
                 return Socialite::driver($provider)
                     ->scopes($googleScopes)
-                    ->with(["access_type" => "offline", "prompt" => "consent select_account"])
+                    ->with(["access_type" => "offline", "prompt" => "select_account"])
+//                    ->with(["access_type" => "offline", "prompt" => "consent select_account"])
                     ->redirect();
         }
     }

@@ -7,6 +7,8 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::get('/score-ranking', 'ScoreRankingController@showRanking')->name('showRanking');
+
 Route::get('/test', 'RatingsController@test');
 
 Route::get('/registration', 'Auth\RegistrationController@showRegistration')->name('registration');
@@ -70,6 +72,7 @@ Route::get('/ratetheirmeeting', 'RateTheirMeetingController@index')->name('ratet
 Route::post('/ratetheirmeeting', 'RateTheirMeetingController@send')->name('ratetheirmeeting');
 
 Route::get('/rating/{rating_key}/{event_id}/{rate}', 'RatingsController@handleRating')->name('rating');
+Route::post('/saveRatingComments', 'RatingsController@saveRatingComments');
 
 Route::get('/outlook', 'OutlookController@login');
 Route::get('/outlookauth', 'OutlookController@outlookauth');
