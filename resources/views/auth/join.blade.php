@@ -14,6 +14,7 @@ $_SESSION['organization_owner'] = 0;
 
 @section('style-register')
     <link rel="stylesheet" href="{{asset('css/register-profile.css')}}">
+    <script type="text/javascript" src="{{asset('js/register-profile.js')}}"></script>
 @endsection
 
 @section('content')
@@ -28,7 +29,7 @@ $_SESSION['organization_owner'] = 0;
             </div>
 
             <div class="opt">
-                <form method="POST" action="{{ route('register') }}" autocomplete="off">
+                <form id="frm-register" method="POST" action="{{ route('register') }}" autocomplete="off">
                     @csrf
 
                     @if(isset($_SESSION['registration_type']) && $_SESSION['registration_type'] != 'email')
@@ -38,12 +39,6 @@ $_SESSION['organization_owner'] = 0;
                             <input id="name" type="text"
                                    class="form-control @error('name') is-invalid @enderror" name="name"
                                    value="{{ $_SESSION['user_name'] }}" required autocomplete="name" autofocus readonly>
-
-                            @error('name')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -56,11 +51,7 @@ $_SESSION['organization_owner'] = 0;
                                    value="{{ $_SESSION['user_email'] }}"
                                    required autocomplete="email" readonly>
 
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
+                            <span class="email-msg"></span>
                         </div>
 
                     @else
@@ -76,12 +67,6 @@ $_SESSION['organization_owner'] = 0;
                                        class="form-control @error('name') is-invalid @enderror" name="name"
                                        value="{{ old('name') }}" required autocomplete="name" autofocus>
                             @endif
-
-                            @error('name')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -102,11 +87,7 @@ $_SESSION['organization_owner'] = 0;
                                        required autocomplete="email">
                             @endif
 
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
+                            <span class="email-msg"></span>
                         </div>
                     @endif
 
@@ -118,11 +99,7 @@ $_SESSION['organization_owner'] = 0;
                                class="form-control @error('password') is-invalid @enderror" name="password"
                                required autocomplete="new-password">
 
-                        @error('password')
-                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                        @enderror
+                        <span class="pass-msg"></span>
                     </div>
 
                     <div class="form-group">
@@ -131,6 +108,8 @@ $_SESSION['organization_owner'] = 0;
 
                         <input id="password-confirm" type="password" class="form-control"
                                name="password_confirmation" required autocomplete="new-password">
+
+                        <span class="conf-msg"></span>
 
                     </div>
 

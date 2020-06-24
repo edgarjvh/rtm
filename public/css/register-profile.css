@@ -165,6 +165,13 @@ main.py-4 {
   height: 20px;
   margin-right: 10px;
 }
+.profile-container .reg-options .opt .email-msg,
+.profile-container .reg-options .opt .pass-msg,
+.profile-container .reg-options .opt .conf-msg {
+  color: darkred;
+  font-size: 12px;
+  display: none;
+}
 .profile-container .reg-options .opt:hover .bottom-line {
   width: 100%;
 }

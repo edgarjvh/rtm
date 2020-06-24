@@ -106,56 +106,17 @@ class SocialAuthController extends Controller
                             $body->content->contentEntities[0]->thumbnails[0] = new \stdClass();
                             $body->content->contentEntities[0]->entityLocation = $link;
 
-                            $events = array();
+                            $global_avg = DB::select(
+                                "select 
+                                    IFNULL(avg(r.rate),0) as score                 
+                                    from users as u  
+                                    left join events as e on u.email = e.organizer 
+                                    left join ratings as r on e.event_id = r.event_id 
+                                    where u.email =  '". $this->user->email ."'  
+                                    group by u.email"
+                            );
 
-                            if ($this->user->organization_owner === 1) {
-                                $events = DB::select(
-                                    "(select
-                                    e.*, u.name
-                                    from users as u
-                                    left join events as e on u.google_account = e.organizer
-                                    where u.organization_id = " . $this->user->organization_id . " and e.event_id is not null)
-                                    UNION
-                                    (select
-                                    e.*, u.name
-                                    from events as e
-                                    left join users as u on u.outlook_account = e.organizer
-                                    where u.organization_id = " . $this->user->organization_id . " and e.event_id is not null)
-                                    order by start_date desc");
-                            } else {
-                                $events = DB::select(
-                                    "(select
-                                    e.*, u.name, concat('unrated') as rate
-                                    from events as e
-                                    left join users as u on e.organizer = u.google_account
-                                    where u.email = '" . strtolower(Auth::user()->email) . "')
-                                    UNION
-                                    (select
-                                    e.*, u.name, concat('unrated') as rate
-                                    from events as e
-                                    left join users as u on e.organizer = u.outlook_account
-                                    where u.email = '" . strtolower(Auth::user()->email) . "')
-                                    order by start_date desc");
-                            }
-
-                            $rates = [];
-
-                            foreach ($events as $event) {
-                                $rate = Rating::where('event_id', $event->event_id)->avg('rate');
-                                $event->rate = $rate;
-
-                                if (is_numeric($rate)) {
-                                    $rates[] = $rate;
-                                }
-                            }
-
-                            if (count($rates) > 0) {
-                                $global_avg = array_sum($rates) / count($rates);
-                            } else {
-                                $global_avg = 0;
-                            }
-
-                            $global_avg = number_format($global_avg, 1);
+                            $global_avg = number_format($global_avg[0]->score, 2);
 
                             $html = <<<EOD
                                 <table style="width: 552px; height:288px;">
@@ -243,7 +204,7 @@ EOD;
                             }
 
                             $shared = 'linkedin';
-                            $_SESSION['shared'] = 'not-shared';
+                            $_SESSION['shared'] = 'shared';
                             Redirect::to('/home')->send();
 //                            return redirect()->route('home')->withErrors(compact('shared'));
                         }
@@ -251,13 +212,13 @@ EOD;
 
                     $userSocial = Socialite::driver($provider)->user();
 
-                    $user = User::firstOrCreate([
-                        'email' => $userSocial->email
+                    $user = User::updateOrCreate([
+                        'email' => strtolower($userSocial->email)
                     ], [
                         'name' => $userSocial->name,
                         'password' => Hash::make(Str::random(10)),
                         'email_verified_at' => now(),
-                        'linkedin_account' => $userSocial->email,
+                        'linkedin_account' => strtolower($userSocial->email),
                         'linkedin_access_token' => $userSocial->token,
                         'linkedin_refresh_token' => null,
                         'linkedin_id' => $userSocial->id,
@@ -284,17 +245,18 @@ EOD;
                     $userSocial = Socialite::driver($provider)->user();
 
                     $user = User::firstOrCreate([
-                        'email' => $userSocial->email
+                        'email' => strtolower($userSocial->email)
                     ], [
                         'name' => $userSocial->name,
                         'password' => Hash::make(Str::random(10)),
                         'email_verified_at' => now(),
-                        'google_account' => $userSocial->email,
+                        'google_account' => strtolower($userSocial->email),
                         'google_access_token' => $userSocial->token,
-                        'google_refresh_token' => $userSocial->refreshToken,
+                        //'google_refresh_token' => $userSocial->refreshToken,
                         'google_id' => $userSocial->id,
                         'google_expiry_token' => $userSocial->expiresIn,
                         'google_avatar' => $userSocial->avatar,
+                        'verify_token' => null
 //                        'organization_id' => 0,
 //                        'organization_owner' => $_SESSION['organization_owner']
                     ]);
@@ -311,6 +273,7 @@ EOD;
             default:
                 return redirect('/home');
                 break;
+
         }
     }
 }

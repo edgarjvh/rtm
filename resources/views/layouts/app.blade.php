@@ -95,6 +95,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 </head>
 <body>
 
+@csrf
+
 <div class="modal-container">
     <div class="modal-wrapper">
         <div class="home-modal">
@@ -148,30 +150,38 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
                 <div class="user-image">
                     @if(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'google')
-                        @if (Auth::user()->google_avatar)
+                        @if(Auth::user()->avatar)
+                            <img src="{{Storage::url(Auth::user()->avatar)}}" alt="">
+                        @elseif (Auth::user()->google_avatar)
                             <img src="{{Auth::user()->google_avatar}}" alt="">
                         @else
                             <img src="{{asset('img/default-profile.png')}}" alt="">
                         @endif
                     @elseif(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'linkedin')
-                        @if (Auth::user()->linkedin_avatar)
+                        @if(Auth::user()->avatar)
+                            <img src="{{Storage::url(Auth::user()->avatar)}}" alt="">
+                        @elseif (Auth::user()->linkedin_avatar)
                             <img src="{{Auth::user()->linkedin_avatar}}" alt="">
                         @else
                             <img src="{{asset('img/default-profile.png')}}" alt="">
                         @endif
                     @else
-                        <img src="{{asset('img/default-profile.png')}}" alt="">
+                        @if(Auth::user()->avatar)
+                            <img src="{{Storage::url(Auth::user()->avatar)}}" alt="">
+                        @else
+                            <img src="{{asset('img/default-profile.png')}}" alt="">
+                        @endif
                     @endif
                 </div>
 
                 <a href="#" class="change-user-image" title="Change User Image">
-                    <span class="fas fa-camera"></span>
+                    <span class="fas fa-camera" id="change-user-image"></span>
                 </a>
             </div>
 
-            <div class="sidebar-item">
-                <a class="sidebar-link" href="/invite-your-team">Invite Team Members</a>
-            </div>
+            {{--<div class="sidebar-item">--}}
+                {{--<a class="sidebar-link" href="/invite-your-team">Invite Team Members</a>--}}
+            {{--</div>--}}
 
             <div class="sidebar-item">
                 <a class="sidebar-link logout-btn" href="{{route('logout')}}" title="Log Out"
@@ -234,31 +244,45 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
                             <div class="user-image">
                                 @if(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'google')
-                                    @if (Auth::user()->google_avatar)
+                                    @if(Auth::user()->avatar)
+                                        <img src="{{Storage::url(Auth::user()->avatar)}}" alt="">
+                                    @elseif (Auth::user()->google_avatar)
                                         <img src="{{Auth::user()->google_avatar}}" alt="">
                                     @else
                                         <img src="{{asset('img/default-profile.png')}}" alt="">
                                     @endif
                                 @elseif(isset($_SESSION['login_type']) && $_SESSION['login_type'] == 'linkedin')
-                                    @if (Auth::user()->linkedin_avatar)
+                                    @if(Auth::user()->avatar)
+                                        <img src="{{Storage::url(Auth::user()->avatar)}}" alt="">
+                                    @elseif (Auth::user()->linkedin_avatar)
                                         <img src="{{Auth::user()->linkedin_avatar}}" alt="">
                                     @else
                                         <img src="{{asset('img/default-profile.png')}}" alt="">
                                     @endif
                                 @else
-                                    <img src="{{asset('img/default-profile.png')}}" alt="">
+                                    @if(Auth::user()->avatar)
+                                        <img src="{{Storage::url(Auth::user()->avatar)}}" alt="">
+                                    @else
+                                        <img src="{{asset('img/default-profile.png')}}" alt="">
+                                    @endif
                                 @endif
                             </div>
 
                             <a href="#" class="change-user-image" title="Change User Image">
-                                <span class="fas fa-camera"></span>
+                                <form action="{{route('updateAvatar')}}" method="post" enctype="multipart/form-data"
+                                      id="frm-update-image">
+                                    @csrf
+                                    <input type="file" id="newimage" hidden="hidden" name="newimage" accept="image/*">
+                                </form>
+
+                                <span class="fas fa-camera" id="change-user-image"></span>
                             </a>
                         </div>
 
                     @endif
 
                     <div class="logout-container">
-                        <a href="/invite-your-team">Invite Team Members</a>
+                        {{--<a href="/invite-your-team">Invite Team Members</a>--}}
 
                         <a class="logout-btn" href="{{route('logout')}}" title="Log Out"
                            onclick="

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class VerifyController extends Controller
@@ -17,7 +19,10 @@ class VerifyController extends Controller
     }
 
     public function verifyEmailFirst($email){
-        $user = User::where('email', strtolower($email))->whereNotNull('email_verified_at')->first();
+        $user = User::where('email', strtolower($email))
+            ->whereNotNull('email_verified_at')
+            ->whereNull('verify_token')
+            ->first();
 
         if ($user){
             return redirect(route('login'));
@@ -60,5 +65,20 @@ class VerifyController extends Controller
         }else{
             return view('error')->with('message', 'Invalid verification token');
         }
+    }
+
+    public function updateAvatar(Request $request){
+
+        Auth::user()->avatar = $request->file('newimage')->store('public/avatar');
+        Auth::user()->save();
+        return Redirect::to('/home');
+    }
+
+    public function deleteTeamMember(Request $request){
+        $id = $request->memberId;
+
+        $result = User::where('id', $id)->delete();
+
+        return response()->json(['result' => 'OK', 'data' => $result]);
     }
 }

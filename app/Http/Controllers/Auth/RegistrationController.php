@@ -61,4 +61,12 @@ class RegistrationController extends Controller
 
         return response()->json(['logout' => 'success']);
     }
+
+    public function checkAccount(Request $request){
+        $email = $request->email;
+
+        $user = User::where('email', $email)->first();
+
+        return response()->json(['result' => $user ? 1 : 0]);
+    }
 }

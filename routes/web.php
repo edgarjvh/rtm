@@ -1,7 +1,9 @@
 <?php
 
+use App\Exports\MeetingsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -72,11 +74,16 @@ Route::get('/ratetheirmeeting', 'RateTheirMeetingController@index')->name('ratet
 Route::post('/ratetheirmeeting', 'RateTheirMeetingController@send')->name('ratetheirmeeting');
 
 Route::get('/rating/{rating_key}/{event_id}/{rate}', 'RatingsController@handleRating')->name('rating');
-Route::post('/saveRatingComments', 'RatingsController@saveRatingComments');
+Route::post('/saveComments', 'CommentsController@saveComment');
+Route::post('/getComments', 'CommentsController@getComments');
 
 Route::get('/outlook', 'OutlookController@login');
 Route::get('/outlookauth', 'OutlookController@outlookauth');
 Route::get('/ocal', 'OutlookController@outlookCalendar')->name('calendar');
+
+Route::post('/updateavatar', 'Auth\VerifyController@updateAvatar')->name('updateAvatar');
+Route::post('/deleteTeamMember', 'Auth\VerifyController@deleteTeamMember');
+
 
 Route::get('/htmltopng', function (){
    return view ('htmltopng');
@@ -96,6 +103,14 @@ Route::get('/sendEmail/{email}/{rating_key}/{event_id}', 'MessagesController@sen
 
 Route::get('/getip', 'EventsController@return_ip');
 
+Route::get('/rankingscores', 'ScoreRankingController@showScores');
+
+Route::post('/checkAccount', 'Auth\RegistrationController@checkAccount');
+
+Route::get('/export', function (){
+    return Excel::download(new MeetingsExport, 'meetings.csv');
+})->middleware('isowner');
+
 
 // =============== FOR TESTING PURPOSES ================
 Route::get('/rate', function (){
@@ -109,6 +124,7 @@ Route::get('/rate1', function (){
 Route::get('/jteam', function (){
     return view('emails.join-team')->with(['team_leader_name' => 'Edgar Hernandez', 'token' => 'blablabla']);
 });
+
 
 Route::get('/ver', function (){
     return view('emails.email-verification')->with(['user' => new myUser('edgarjvh@gmail.com', 'dadadhawda7823yehbda7')]);

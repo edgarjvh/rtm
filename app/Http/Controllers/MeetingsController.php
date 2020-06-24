@@ -58,7 +58,8 @@ class MeetingsController extends Controller
     public function sendInvitations(Request $request)
     {
         $sent = 0;
-        $notSent = 0;
+        $alreadyRegistered = 0;
+        $invalidEmail = 0;
 
         $partners = explode(',', $request->partners);
 
@@ -71,7 +72,7 @@ class MeetingsController extends Controller
                     $isRegistered = User::where('email', $partner)->first();
 
                     if ($isRegistered){
-                        $notSent++;
+                        $alreadyRegistered++;
                     }else{
                         $token = Str::random(100);
 
@@ -85,7 +86,7 @@ class MeetingsController extends Controller
                         $sent++;
                     }
                 }else{
-                    $notSent++;
+                    $invalidEmail++;
                 }
             }
         }
@@ -96,7 +97,7 @@ class MeetingsController extends Controller
             ]);
         }
 
-        return view('invite-your-team')->with(['sent' => $sent, 'notSent' => $notSent]);
+        return view('invite-your-team')->with(['sent' => $sent, 'alreadyRegistered' => $alreadyRegistered, 'invalidEmail' => $invalidEmail]);
     }
 
     public function getMeetings()

@@ -7,11 +7,13 @@
 
 @section('content')
     <div class="main-container">
-        @if(isset($sent) && isset($notSent))
+        @if(isset($sent) && isset($alreadyRegistered) && isset($invalidEmail))
             <div class="msg">
                 <div class="sent">{{$sent}} invitations sent</div>
                 <div class="msg-sep">-</div>
-                <div class="not-sent">{{$notSent}} invitations not sent</div>
+                <div class="not-sent">{{$alreadyRegistered}} already registered</div>
+                <div class="msg-sep">-</div>
+                <div class="not-sent">{{$invalidEmail}} invalid email</div>
             </div>
         @endif
 

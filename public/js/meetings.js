@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-    
-
 
     $(document).on('click', '.tabs .tab', function (e) {
         let btn = $(this);
@@ -189,7 +187,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.tbtn.delete-account', function (e) {
-       $(document).find('.modal-container').fadeIn(500);
+        $(document).find('.modal-container').fadeIn(500);
     });
 
     $(document).on('click', '.modal-cancel-btn', function (e) {
@@ -205,7 +203,7 @@ $(document).ready(function () {
                 '_token': $('input[name=_token]').val()
             },
             success: function (response) {
-                if (response.logout === 'success'){
+                if (response.logout === 'success') {
                     window.location.href = '/login';
                 }
             },
@@ -213,6 +211,173 @@ $(document).ready(function () {
                 console.log('Error');
             }
         })
+    });
+
+    $(document).on('click', '.btn-comment-mobile', function (e) {
+        let tableMobile = $(this).closest('.table-mobile');
+        let row = $(this).closest('.trow');
+        let eventInfo = row.find('.event-info');
+        let eventComments = row.find('.event-comments');
+        let eventId = eventInfo.find('.tcol-line.event-id').text();
+        let btnLoading = row.find('.btn-loading');
+
+        if (eventComments.hasClass('shown')) {
+            eventComments.slideUp();
+            eventComments.removeClass('shown');
+        } else {
+            btnLoading.show();
+            $.ajax({
+                type: 'post',
+                url: '/getComments',
+                dataType: 'json',
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                    'eventId': eventId
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.comments.length > 0) {
+
+                        let htmlcomments = '';
+
+                        for (let i = 0; i < response.comments.length; i++) {
+                            let comment = response.comments[i];
+
+                            htmlcomments += `
+                            <div class="comment-container">
+                                <div class="date-time">` + comment.created_at + `</div>
+
+                                <div class="content">` + comment.comment + `</div>
+                            </div>
+                        `;
+                        }
+
+                        eventComments.html(htmlcomments);
+                    } else {
+                        eventComments.html(
+                            `
+                        <div class="comment-container">
+                            <div class="no-comments">
+                                No comments to show
+                            </div>
+                        </div>
+                        `
+                        );
+                    }
+
+                    tableMobile.find('.event-comments').slideUp();
+                    tableMobile.find('.event-comments').removeClass('shown');
+                    eventComments.slideDown();
+                    eventComments.addClass('shown');
+                    btnLoading.hide();
+                },
+                error: function (a, b, c) {
+                    console.log('Error');
+                }
+            });
+        }
+    });
+
+    $(document).on('click', '.btn-comment', function (e) {
+        let tbody = $(this).closest('.tbody');
+        let row = $(this).closest('.trow');
+        let eventInfo = row.find('.event-info');
+        let eventComments = row.find('.event-comments');
+        let eventId = eventInfo.find('.tcol.event-id').text();
+        let btnLoading = row.find('.btn-loading');
+
+        if (eventComments.hasClass('shown')) {
+            eventComments.slideUp();
+            eventComments.removeClass('shown');
+        } else {
+            btnLoading.show();
+            $.ajax({
+                type: 'post',
+                url: '/getComments',
+                dataType: 'json',
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                    'eventId': eventId
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.comments.length > 0) {
+
+                        let htmlcomments = '';
+
+                        for (let i = 0; i < response.comments.length; i++) {
+                            let comment = response.comments[i];
+
+                            htmlcomments += `
+                            <div class="comment-container">
+                                <div class="date-time">` + comment.created_at + `</div>
+
+                                <div class="content">` + comment.comment + `</div>
+                            </div>
+                        `;
+                        }
+
+                        eventComments.html(htmlcomments);
+                    } else {
+                        eventComments.html(
+                            `
+                        <div class="comment-container">
+                            <div class="no-comments">
+                                No comments to show
+                            </div>
+                        </div>
+                        `
+                        );
+                    }
+
+                    tbody.find('.event-comments').slideUp();
+                    tbody.find('.event-comments').removeClass('shown');
+                    eventComments.slideDown();
+                    eventComments.addClass('shown');
+                    btnLoading.hide();
+                },
+                error: function (a, b, c) {
+                    console.log('Error');
+                }
+            });
+        }
+    });
+
+    $(document).on('click', '.action-delete-user', function (e) {
+        if (confirm('Are you sure to delete this user?')){
+            let tbody = $(this).closest('.tbody');
+            let trow = $(this).closest('.trow');
+            let wrapper = trow.find('.trow-wrapper');
+            let id = trow.find('input.member-id').val();
+            let counter = $(document).find('span.members-counter');
+
+            $.ajax({
+                type: 'post',
+                url: '/deleteTeamMember',
+                dataType: 'json',
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                    'memberId': id
+                },
+                success: function (response) {
+                    if (response.result === 'OK' && response.data === 1){
+                        wrapper.animate({
+                            left: '-100%'
+                        },500, function () {
+                            trow.remove();
+
+                            let count = tbody.find('.trow.member').length;
+                            counter.text(10 - count);
+                        });
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log('Error');
+                }
+            });
+        }
     });
 
     loadMeetings();

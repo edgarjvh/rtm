@@ -27,7 +27,7 @@
                 <div class="calendar-icon">
                     <img src="{{asset('img/gmail.png')}}" alt="">
                     @if($userLogged)
-                        @if($userLogged->google_access_token != null)
+                        @if($userLogged->google_refresh_token != null)
                             <span class="is-authorized fas fa-check-circle"></span>
                         @endif
                     @endif
@@ -40,7 +40,7 @@
 
                 @if($userLogged)
 
-                    @if($userLogged->google_access_token == null)
+                    @if($userLogged->google_refresh_token == null)
                         <a href="/googleAuth">
                             Authorize
                         </a>

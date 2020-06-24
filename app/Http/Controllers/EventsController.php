@@ -9,6 +9,7 @@ use App\Rating;
 use App\Setting;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -31,8 +32,9 @@ class EventsController extends Controller
             if (!Auth::user()) {
                 Redirect::to('login')->send();
             } else {
-                if (!Auth::user()->email_verified_at) {
-                    return view('auth.verify', ['email' => strtolower(Auth::user()->email)]);
+                if (!Auth::user()->email_verified_at || Auth::user()->verify_token) {
+//                    return view('auth.verify', ['email' => strtolower(Auth::user()->email)]);
+                    Redirect::to('/verifyEmailFirst/'.strtolower(Auth::user()->email))->send();
                 }
 
                 $this->user = Auth::user();
@@ -50,7 +52,7 @@ class EventsController extends Controller
                     Redirect::to('/organization-setup')->send();
                 }
 
-                if (!$this->user->google_access_token && !$this->user->outlook_access_token) {
+                if (!$this->user->google_refresh_token && !$this->user->outlook_access_token) {
                     Redirect::to('/calendar-authorization')->send();
                 }
 
@@ -69,6 +71,8 @@ class EventsController extends Controller
      */
     public function index()
     {
+
+
         $user = Auth::user();
         $exclusions = Exclusion::where('user_email', $user->email)->get();
         $settings = Setting::firstOrNew(['user_id' => $user->id], [
@@ -78,6 +82,8 @@ class EventsController extends Controller
         $settings->save();
 
         $events = array();
+
+        $team_members = [];
 
         if ($this->user->organization_owner === 1) {
             $events = DB::select(
@@ -129,6 +135,23 @@ class EventsController extends Controller
             );
         }
 
+        $team_members = DB::select(
+            "select 
+                IFNULL(avg(r.rate),0) as score,
+                u.id,
+                u.email,
+                u.avatar,
+                u.organization_owner,
+                s.sharing_meeting_score
+                from users as u 
+                left join events as e on u.email = e.organizer
+                left join ratings as r on e.event_id = r.event_id
+                left join settings as s on u.id = s.user_id
+                where u.organization_id =  ". $this->user->organization_id ." 
+                group by u.id, u.email, u.avatar, u.organization_owner, s.sharing_meeting_score
+                order by u.organization_owner desc"
+        );
+
         $rates = [];
 
         foreach ($events as $event) {
@@ -139,14 +162,24 @@ class EventsController extends Controller
             }
         }
 
-        if (count($rates) > 0) {
-            $global_avg = array_sum($rates) / count($rates);
-        } else {
-            $global_avg = 0;
-        }
+//        if (count($rates) > 0) {
+//            $global_avg = array_sum($rates) / count($rates);
+//        } else {
+//            $global_avg = 0;
+//        }
+
+        $global_avg = DB::select(
+            "select 
+                IFNULL(avg(r.rate),0) as score                 
+                from users as u  
+                left join events as e on u.email = e.organizer 
+                left join ratings as r on e.event_id = r.event_id 
+                where u.email =  '". $this->user->email ."'  
+                group by u.email"
+        );
 
         $org = Organization::where('id', $this->user->organization_id)->first();
-        $organization = $org->name;
+        $organization = $org ? $org->name : '';
 
         $timezone = 'America/Caracas';
 //        $timezone = $this->get_local_time();
@@ -158,7 +191,8 @@ class EventsController extends Controller
             'global_avg' => $global_avg,
             'userLogged' => $user,
             'exclusions' => $exclusions,
-            'settings' => $settings
+            'settings' => $settings,
+            'teamMembers' => $team_members
         ]);
     }
 

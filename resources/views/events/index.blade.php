@@ -7,42 +7,54 @@
 @endsection
 
 @section('content')
-    @csrf
-
-
 
     <div class="shared-msg" id="shared-msg">
         Meeting Score has been shared on LinkedIn.
     </div>
 
     @if(isset($_SESSION['shared']))
-        @if($_SESSION['shared'] == 'shared')
-            <script>
-                document.getElementById('shared-msg').className = 'shared';
-                document.getElementById('shared-msg').innerHTML = 'Meeting Score has been shared on LinkedIn.';
 
-                setTimeout(function () {
-                    $(document).find('#shared-msg').css('height', '35px');
-                }, 500);
+        <script>
+            document.getElementById('shared-msg').className = 'shared';
+            document.getElementById('shared-msg').innerHTML = 'Meeting Score has been shared on LinkedIn.';
 
-                setTimeout(function () {
-                    $(document).find('#shared-msg').css('height', 0);
-                }, 5000);
-            </script>
-        @else
-            <script>
-                document.getElementById('shared-msg').className = 'not-shared';
-                document.getElementById('shared-msg').innerHTML = 'An error occured while trying to share on LinkedIn. Please try again in a few minutes.';
+            setTimeout(function () {
+                $(document).find('#shared-msg').css('height', '35px');
+            }, 500);
 
-                setTimeout(function () {
-                    $(document).find('#shared-msg').css('height', '35px');
-                }, 500);
+            setTimeout(function () {
+                $(document).find('#shared-msg').css('height', 0);
+            }, 5000);
+        </script>
 
-                setTimeout(function () {
-                    $(document).find('#shared-msg').css('height', 0);
-                }, 5000);
-            </script>
-        @endif
+
+        {{--@if($_SESSION['shared'] == 'shared')--}}
+            {{--<script>--}}
+                {{--document.getElementById('shared-msg').className = 'shared';--}}
+                {{--document.getElementById('shared-msg').innerHTML = 'Meeting Score has been shared on LinkedIn.';--}}
+
+                {{--setTimeout(function () {--}}
+                    {{--$(document).find('#shared-msg').css('height', '35px');--}}
+                {{--}, 500);--}}
+
+                {{--setTimeout(function () {--}}
+                    {{--$(document).find('#shared-msg').css('height', 0);--}}
+                {{--}, 5000);--}}
+            {{--</script>--}}
+        {{--@else--}}
+            {{--<script>--}}
+                {{--document.getElementById('shared-msg').className = 'not-shared';--}}
+                {{--document.getElementById('shared-msg').innerHTML = 'An error occured while trying to share on LinkedIn. Please try again in a few minutes.';--}}
+
+                {{--setTimeout(function () {--}}
+                    {{--$(document).find('#shared-msg').css('height', '35px');--}}
+                {{--}, 500);--}}
+
+                {{--setTimeout(function () {--}}
+                    {{--$(document).find('#shared-msg').css('height', 0);--}}
+                {{--}, 5000);--}}
+            {{--</script>--}}
+        {{--@endif--}}
 
     @endif
 
@@ -57,14 +69,19 @@
             <div class="score">
 
                 <div class="score-value">
-                    {{number_format($global_avg, 2)}}
+                    {{number_format($global_avg[0]->score, 2)}}
                 </div>
 
                 <div class="sharing">
                     <a href="{{env('APP_URL').'/shareonlinkedin/'}}" class="linkedin">
-                        <span class="fab fa-linkedin-in"></span> Share
+                        <img src="{{asset('img/linkedin2.png')}}" alt="" style="max-width: 100%">
                     </a>
                 </div>
+                {{--<div class="sharing">--}}
+                    {{--<a href="{{env('APP_URL').'/shareonlinkedin/'}}" class="linkedin">--}}
+                        {{--<span class="fab fa-linkedin-in"></span> Share--}}
+                    {{--</a>--}}
+                {{--</div>--}}
             </div>
         </div>
 
@@ -85,81 +102,118 @@
         <div class="tabs-container">
             <div class="tab-content tab-my-meetings active">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            {{--<th scope="col">Provider</th>--}}
-                            <th scope="col">Organizer</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">Rate</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @if(count($newEvents) > 0)
-                            @foreach($newEvents as $event)
-                                <tr>
-                                    {{--<td class="align-middle"><img--}}
-                                                {{--src="{{'/img/'.strtolower($event->provider) . '.png'}}"--}}
-                                                {{--style="width:16px; margin-top:-5px"--}}
-                                                {{--alt=""> {{ ucwords($event->provider) }}</td>--}}
-                                    <td class="align-middle">
-                                        <b>{{$event->name}}</b>
-                                        <br>
-                                        <small>{{$event->organizer}}</small>
-                                    </td>
-                                    <td class="align-middle">  {{$event->title}}</td>
-                                    <td class="align-middle">{{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</td>
-                                    <td class="align-middle">{{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</td>
-                                    <td class="align-middle"><span class="rate-responses">{{number_format($event->score,2)}}</span> ({{$event->responses}})</td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="6">No meetings to show</td>
-                            </tr>
-                        @endif
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            {{--<td colspan="6">{{ $newEvents->links() }}</td>--}}
-                        </tr>
-                        </tfoot>
-                    </table>
+                    <div class="tbl">
+                        <div class="thead">
+                            <div class="trow">
+                                <div class="tcol organizer">Organizer</div>
+                                <div class="tcol title">Title</div>
+                                <div class="tcol start-date">Start Date</div>
+                                <div class="tcol end-date">End Date</div>
+                                <div class="tcol rate">Rate</div>
+
+                                @if($userLogged->organization_owner == 1)
+                                    <div class="tcol export-icon">
+                                        <a href="/export">
+                                            <span class="fas fa-file-csv"></span>
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="tbody">
+                            @if(count($newEvents) > 0)
+                                @foreach($newEvents as $event)
+                                    <div class="trow">
+
+                                        <div class="event-info">
+                                            <div class="tcol event-id">{{$event->event_id}}</div>
+                                            <div class="tcol organizer">
+                                                <b>{{$event->name}}</b>
+                                                <br>
+                                                <small>{{$event->organizer}}</small>
+                                            </div>
+                                            <div class="tcol title">
+                                                {{$event->title}}
+                                            </div>
+                                            <div class="tcol start-date">
+                                                {{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}
+                                            </div>
+                                            <div class="tcol end-date">
+                                                {{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}
+                                            </div>
+                                            <div class="tcol rate">
+                                                <span class="rate-responses">{{number_format($event->score,2)}}</span>
+                                                ({{$event->responses}})
+                                                <i class="fas fa-comment-dots btn-comment" title="Comments"></i>
+                                                <i class="fas fa-spin fa-spinner btn-loading"></i>
+                                            </div>
+                                            @if($userLogged->organization_owner == 1)
+                                                <div class="tcol export-icon"></div>
+                                            @endif
+                                        </div>
+
+                                        <div class="event-comments"></div>
+
+
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="trow">
+                                    <div class="tcol no-meetings">No meetings to show</div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-mobile">
                     @if(count($newEvents) > 0)
                         @foreach($newEvents as $event)
                             <div class="trow">
-                                <div class="tcol tcol-left">
-                                    <div class="tcol-line">
-                                        <span class="tcol-title">Provider</span>
-                                        <span class="tcol-data">{{ ucwords($event->provider) }}</span>
+                                <div class="event-info">
+                                    <div class="tcol tcol-left">
+                                        <div class="tcol-line event-id">
+                                            {{$event->event_id}}
+                                        </div>
+                                        <div class="tcol-line">
+                                            <span class="tcol-title">Provider</span>
+                                            <span class="tcol-data">{{ ucwords($event->provider) }}</span>
+                                        </div>
+                                        <div class="tcol-line">
+                                            <span class="tcol-title">Organizer</span>
+                                            <span class="tcol-data">{{$event->name}}</span>
+                                        </div>
+                                        <div class="tcol-line">
+                                            <span class="tcol-title">Title</span>
+                                            <span class="tcol-data">{{$event->title}}</span>
+                                        </div>
                                     </div>
-                                    <div class="tcol-line">
-                                        <span class="tcol-title">Organizer</span>
-                                        <span class="tcol-data">{{$event->name}}</span>
-                                    </div>
-                                    <div class="tcol-line">
-                                        <span class="tcol-title">Title</span>
-                                        <span class="tcol-data">{{$event->title}}</span>
+
+                                    <div class="tcol tcol-right">
+                                        <div class="tcol-line">
+                                            <span class="tcol-title">Start Date</span>
+                                            <span class="tcol-data">{{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</span>
+                                        </div>
+                                        <div class="tcol-line">
+                                            <span class="tcol-title">End Date</span>
+                                            <span class="tcol-data">{{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</span>
+                                        </div>
+                                        <div class="tcol-line">
+                                            <span class="tcol-title">Rate</span>
+                                            <span class="tcol-data"><span
+                                                        class="rate-responses">{{number_format($event->score,2)}}</span> ({{$event->responses}}
+                                                )</span>
+                                            <i class="fas fa-comment-dots btn-comment-mobile" title="Comments"></i>
+
+                                            <i class="fas fa-spin fa-spinner btn-loading"></i>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="event-comments">
+                                    <div class="comment-container">
+                                        <div class="date-time">comment.created_at</div>
 
-                                <div class="tcol tcol-right">
-                                    <div class="tcol-line">
-                                        <span class="tcol-title">Start Date</span>
-                                        <span class="tcol-data">{{(new DateTime($event->start_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</span>
-                                    </div>
-                                    <div class="tcol-line">
-                                        <span class="tcol-title">End Date</span>
-                                        <span class="tcol-data">{{(new DateTime($event->end_date,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone($tz))->format('Y-m-d H:i:s')}}</span>
-                                    </div>
-                                    <div class="tcol-line">
-                                        <span class="tcol-title">Rate</span>
-                                        <span class="tcol-data"><span class="rate-responses">{{number_format($event->score,2)}}</span> ({{$event->responses}})</span>
+                                        <div class="content">comment.comment</div>
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +227,75 @@
 
             @if($userLogged->organization_owner == 1)
                 <div class="tab-content tab-team">
-                    Tab Team
+                    <div class="tbl-team">
+                        <div class="thead">
+                            <div class="trow">
+                                <div class="tcol team-member">Team Member</div>
+                                <div class="tcol member-score">Meeting Score</div>
+                                <div class="tcol action"></div>
+                            </div>
+                        </div>
+
+                        <div class="tbody">
+
+                            @foreach($teamMembers as $member)
+                                <div class="trow member">
+                                    <div class="trow-wrapper">
+                                        <input class="member-id" type="hidden" value="{{$member->id}}">
+                                        <div class="tcol team-member">
+                                            <div class="avatar-container">
+                                                @if($member->avatar)
+                                                    <img src="{{Storage::url($member->avatar)}}" alt="">
+                                                @else
+                                                    <img src="{{asset('img/default-profile.png')}}" alt="">
+                                                @endif
+                                            </div>
+                                            <span class="user-email">{{$member->email}}</span>
+                                        </div>
+
+                                        <div class="tcol member-score">
+                                            @if($member->sharing_meeting_score == 1)
+                                                {{number_format($member->score, 2)}}
+                                            @else
+                                                not sharing
+                                            @endif
+                                        </div>
+
+                                        <div class="tcol action">
+                                            @if($member->organization_owner == 1)
+                                                <span class="action-you">You</span>
+                                            @else
+                                                <span class="fas fa-times action-delete-user"></span>
+                                                <span class="action-delete-user" title="Delete {{$member->email}}">Delete User</span>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <div class="trow">
+                                <div class="trow-wrapper">
+                                    <a href="{{route('invite-your-team')}}" class="tcol add-team-member">
+                                        <span class="fas fa-plus"></span>
+                                        <span>Add team member</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="trow">
+                                <div class="trow-wrapper">
+                                    <div class="tcol members-left">
+                                        <p>
+                                            {{--<span class="highlighted1">You have <span class="members-counter">{{10 - count($teamMembers)}}</span> members left to add.</span>--}}
+                                            <span>If you want to grow your team</span>
+                                            <a href="https://ratethismeeting.me/plans" target="_blank" class="highlighted2">upgrade now</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
 
@@ -290,7 +412,7 @@
                     <div class="trow">
                         <div class="exclusions-container">
                             <p>
-                                <strong>This users are blocked</strong> (They won't receive any rating email from you).
+                                <strong>Blocked users won't rate your meetings!</strong> (They won't receive any rating email from you).
                             </p>
 
                             <div class="excluded-email-list">
@@ -316,16 +438,16 @@
                         </div>
                     </div>
 
-                    <div class="trow">
-                        <div class="tbtn transfer-account" title="Transfer my account">
-                            Transfer my account
-                        </div>
+                    {{--<div class="trow">--}}
+                        {{--<div class="tbtn transfer-account" title="Transfer my account">--}}
+                            {{--Transfer my account--}}
+                        {{--</div>--}}
 
-                        <div class="tbtn delete-account" title="Delete my account">
-                            Delete my account
-                        </div>
+                        {{--<div class="tbtn delete-account" title="Delete my account">--}}
+                            {{--Delete my account--}}
+                        {{--</div>--}}
 
-                    </div>
+                    {{--</div>--}}
                 </div>
             </div>
         </div>

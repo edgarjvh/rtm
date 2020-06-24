@@ -75,8 +75,6 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-//        dd($_SESSION);
-
         $org_id = 0;
 
         if ($data['tokenteam'] != '0'){

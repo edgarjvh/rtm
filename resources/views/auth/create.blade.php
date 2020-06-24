@@ -32,6 +32,7 @@ if (isset($_GET['th'])) {
 
 @section('style-register')
     <link rel="stylesheet" href="{{asset('css/register-profile.css')}}">
+    <script type="text/javascript" src="{{asset('js/register-profile.js')}}"></script>
 @endsection
 
 @section('content')
@@ -57,12 +58,6 @@ if (isset($_GET['th'])) {
                                 <input id="name" type="text"
                                        class="form-control @error('name') is-invalid @enderror" name="name"
                                        value="{{ $_SESSION['user_name'] }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
                         @else
                             <div class="form-group">
@@ -72,12 +67,6 @@ if (isset($_GET['th'])) {
                                        class="form-control @error('name') is-invalid @enderror" name="name"
                                        value="{{ $_SESSION['user_name'] }}" required autocomplete="name" autofocus
                                        readonly>
-
-                                @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
                         @endif
 
@@ -91,11 +80,7 @@ if (isset($_GET['th'])) {
                                    value="{{ $_SESSION['user_email'] }}"
                                    required autocomplete="email" readonly>
 
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
+                            <span class="email-msg"></span>
                         </div>
 
                     @else
@@ -111,12 +96,6 @@ if (isset($_GET['th'])) {
                                        class="form-control @error('name') is-invalid @enderror" name="name"
                                        value="{{ old('name') }}" required autocomplete="name" autofocus>
                             @endif
-
-                            @error('name')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -137,11 +116,7 @@ if (isset($_GET['th'])) {
                                        required autocomplete="email">
                             @endif
 
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
+                            <span class="email-msg"></span>
                         </div>
                     @endif
 
@@ -153,11 +128,7 @@ if (isset($_GET['th'])) {
                                class="form-control @error('password') is-invalid @enderror" name="password"
                                required autocomplete="new-password">
 
-                        @error('password')
-                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                        @enderror
+                        <span class="pass-msg"></span>
                     </div>
 
                     <div class="form-group">
@@ -167,6 +138,7 @@ if (isset($_GET['th'])) {
                         <input id="password-confirm" type="password" class="form-control"
                                name="password_confirmation" required autocomplete="new-password">
 
+                        <span class="conf-msg"></span>
                     </div>
 
                     <input type="hidden" id="owner" name="owner" value="1">

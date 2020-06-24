@@ -47,6 +47,7 @@ class User extends Authenticatable
 
         'timezone',
         'has_invited',
+        'avatar',
         
     ];
 

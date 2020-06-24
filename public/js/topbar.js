@@ -30,4 +30,17 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '#change-user-image', function (e) {
+       let newimage = $(document).find('#newimage');
+
+       newimage.click();
+    });
+
+    $(document).on('change','#newimage', function (e) {
+        if($(this).val() !== null){
+            let form = $(document).find('#frm-update-image');
+            form.submit();
+        }
+    });
+
 });

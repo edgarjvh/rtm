@@ -13,7 +13,7 @@
                 Meeting Score Top Rating
             </span>
 
-            <img src="{{asset('img/linkedin2.png')}}" alt="">
+            {{--<img src="{{asset('img/linkedin2.png')}}" alt="">--}}
         </div>
 
         <div class="ranking-table">

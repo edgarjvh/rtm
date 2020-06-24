@@ -302,17 +302,9 @@ class gCalendarController extends Controller
                             }
                         }
                     }
-                } catch (\Google_Exception $e) {
-//                    User::where('email', $user->email)->update(array(
-//                        'google_account' => null,
-//                        'google_access_token' => null,
-//                        'google_refresh_token' => null,
-//                        'google_expiry_token' => null,
-//                        'google_avatar' => null,
-//                        'google_id' => null
-//                    ));
+                } catch (ClientException $e) {
+                    continue;
                 }
-
             }
         }
     }
@@ -492,8 +484,8 @@ class gCalendarController extends Controller
                             echo '<br>';
                         }
 
-                    } catch (\Google_Exception $e) {
-
+                    } catch (ClientException $e) {
+                        dd($e);
                     }
                 } else {
                     echo 'User not exist';
@@ -530,7 +522,11 @@ class gCalendarController extends Controller
 
     public function googleAuth()
     {
-        $email = Auth::user()->email;
+        $email = '';
+        if (Auth::user()){
+            $email = Auth::user()->email;
+        }
+
 
         $rurl = action('gCalendarController@googleAuth');
         $this->client->setRedirectUri($rurl);
@@ -557,7 +553,7 @@ class gCalendarController extends Controller
 
             //dd($accountExist);
 
-            if ($accountExist) {
+            if ($accountExist && ($accountExist->email != $email)) {
                 return view('error')->with('message', 'Selected account has already been authorized.');
             }
 

@@ -34,14 +34,6 @@ class RatingsController extends Controller
         }
     }
 
-    public function saveRatingComments(Request $request){
-        Rating::where(['event_id' => $request->eventid, 'rating_key' => $request->ratingkey])->update([
-            'comments' => $request->comments
-        ]);
-
-        return response()->json(['result' => 'OK', 'data' => $request->comments]);
-    }
-
     public function test(){
         $user = User::where('users.email', 'edgarjvh@gmail.com')
             ->leftJoin('organizations', 'users.organization_id', '=', 'organizations.id')
